@@ -1,0 +1,11 @@
+train:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: train613
+    username: root
+    password: 123456
+  wechat:
+    appid: wx5beb660ccaea6625
+    secret: 091b50f25027863d766641443924713f

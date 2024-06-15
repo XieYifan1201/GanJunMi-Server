@@ -1,0 +1,55 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: dev
+  main:
+    # 允许spring 循环依赖
+    allow-circular-references: true
+  datasource:
+    druid:
+      driver-class-name: ${train.datasource.driver-class-name}
+      url: jdbc:mysql://${train.datasource.host}:${train.datasource.port}/${train.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${train.datasource.username}
+      password: ${train.datasource.password}
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+
+  servlet:
+    multipart:
+      #单个文件上传限制
+      max-file-size: 10MB
+      #单个请求上传限制
+      max-request-size: 100MB
+
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.train.entity
+  configuration:
+    #开启驼峰命名自动映射
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com:
+      train:
+        mapper: debug
+        service: info
+        controller: info
+
+train:
+  jwt:
+    # jwt 密钥
+    secretKey: anjunmi
+    #有效时间 30 天
+    ttl: 2592000000
+    tokenName: token
+  wechat:
+    appid: ${train.wechat.appid}
+    secret: ${train.wechat.secret}
+
+web:
+  upload-path: D:/image/

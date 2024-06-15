@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.train.mapper.CertificateMapper">
+
+    <select id="getByNumber" resultType="com.train.vo.CertificateVO">
+        select uc.id,uc.cerNumber,c.title,c.startdate,c.expiredYear,c.trainUnit,u.name,u.image from userscertificate uc
+            join certificate c on uc.certificateId = c.id
+            join users u on uc.usersId = u.id
+        where uc.cerNumber = #{number};
+    </select>
+</mapper>
