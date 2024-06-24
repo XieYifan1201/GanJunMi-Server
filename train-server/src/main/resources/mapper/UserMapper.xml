@@ -4,7 +4,27 @@
 <mapper namespace="com.train.mapper.UserMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into users (openid, name, password, sex, phone, idCard, roleId, createTime, image)
-        values (#{openid},#{name},#{password},#{sex},#{phone},#{idCard},#{roleId},#{createTime},#{image})
+        insert into users (openid, name, password, sex, phone, idCard, roleId, createTime)
+        values (#{openid},#{name},#{password},#{sex},#{phone},#{idCard},#{roleId},#{createTime})
     </insert>
+    <update id="update">
+        update users
+        <set>
+            <if test="name != null">name = #{name},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="idCard != null">idCard = #{idCard},</if>
+            <if test="roleId != null">roleId = #{roleId}</if>
+        </set>
+        where id = ${id}
+    </update>
+    <select id="pageQuery" resultType="com.train.vo.UserVO">
+        select * from users
+        <where>
+            <if test="role == 3">and roleId = 3</if>
+            <if test="role != 3">and roleId != 3</if>
+            <if test="name != null and name != ''">and name like concat('%',#{name},'%')</if>
+        </where>
+    </select>
 </mapper>

@@ -2,6 +2,7 @@ package com.train.interceptor;
 
 import com.train.constant.JwtConstant;
 import com.train.context.BaseContext;
+import com.train.mapper.UserMapper;
 import com.train.properties.JwtProperties;
 import com.train.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
@@ -23,6 +24,8 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 
     @Autowired
     private JwtProperties jwtProperties;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 校验jwt

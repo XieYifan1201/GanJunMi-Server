@@ -2,11 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.train.mapper.CertificateMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into certificate (title, startdate, expiredYear, trainUnit)
+        values (#{title},#{startdate},#{expiredYear},#{trainUnit})
+    </insert>
+    <update id="update">
+        update certificate
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="startdate != null">startdate = #{startdate},</if>
+            <if test="expiredYear != null">expiredYear = #{expiredYear},</if>
+            <if test="trainUnit != null">trainUnit = #{trainUnit},</if>
+        </set>
+        where id = #{id}
+    </update>
 
-    <select id="getByNumber" resultType="com.train.vo.CertificateVO">
-        select uc.id,uc.cerNumber,c.title,c.startdate,c.expiredYear,c.trainUnit,u.name,u.image from userscertificate uc
-            join certificate c on uc.certificateId = c.id
-            join users u on uc.usersId = u.id
-        where uc.cerNumber = #{number};
-    </select>
 </mapper>

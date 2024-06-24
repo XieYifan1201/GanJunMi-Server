@@ -15,8 +15,10 @@ public class UsersCertificate implements Serializable {
 
     //数据库UsersCertificate实体类
     private Long id;
+    private String name;
+    private String idCard;
     private String cerNumber;
     private Long certificateId;
-    private Long usersId;
+    private String image;
 
 }

@@ -13,6 +13,10 @@ spring:
       url: jdbc:mysql://${train.datasource.host}:${train.datasource.port}/${train.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: ${train.datasource.username}
       password: ${train.datasource.password}
+  redis:
+    host: ${train.redis.host}
+    port: ${train.redis.port}
+    database: ${train.redis.database}
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}

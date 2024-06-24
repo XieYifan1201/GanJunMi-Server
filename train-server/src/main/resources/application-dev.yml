@@ -9,3 +9,7 @@ train:
   wechat:
     appid: wx5beb660ccaea6625
     secret: 091b50f25027863d766641443924713f
+  redis:
+    port: 6379
+    host: localhost
+    database: 2

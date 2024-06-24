@@ -1,16 +1,20 @@
 package com.train.mapper;
 
-import com.train.vo.CertificateVO;
+import com.train.entity.Certificate;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface CertificateMapper {
 
+    /**
+     * 添加证书信息
+     * @param certificate
+     */
+    void save(Certificate certificate);
 
     /**
-     * 通过证书编号获取证书信息
-     * @param number
-     * @return
+     * 修改数据
+     * @param certificate
      */
-    CertificateVO getByNumber(String number);
+    void update(Certificate certificate);
 }

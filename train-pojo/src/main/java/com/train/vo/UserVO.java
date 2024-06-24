@@ -1,4 +1,4 @@
-package com.train.entity;
+package com.train.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,13 +13,11 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements Serializable {
+public class UserVO implements Serializable {
     //数据库User表实体类
 
     private Long id;
-    private String openid;
     private String name;
-    private String password;
     private String sex;
     private String phone;
     private String idCard;

@@ -1,9 +1,13 @@
 package com.train.controller;
 
 import com.train.constant.JwtConstant;
+import com.train.dto.UserAuthorizeDTO;
+import com.train.dto.UserDTO;
 import com.train.dto.UserLoginDTO;
+import com.train.dto.UserPageQueryDTO;
 import com.train.entity.User;
 import com.train.properties.JwtProperties;
+import com.train.result.PageResult;
 import com.train.result.Result;
 import com.train.service.UserService;
 import com.train.utils.JwtUtil;
@@ -40,7 +44,47 @@ public class UserController {
         claims.put("openid",user.getOpenid());
         String token = JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
 
-        return Result.success(UserLoginVO.builder().token(token).build());
+        return Result.success(UserLoginVO.builder().token(token).roleId(user.getRoleId()).build());
+    }
+
+    @PutMapping("/update")
+    @ApiOperation("修改用户信息")
+    public Result update(@RequestBody UserDTO userDTO){
+        log.info("修改用户信息:{}",userDTO);
+        userService.update(userDTO);
+        return Result.success();
+    }
+
+    @GetMapping("/getById")
+    @ApiOperation("获取用户信息")
+    public Result getById(){
+        log.info("获取用户信息");
+        UserDTO userDTO = userService.getById();
+        return Result.success(userDTO);
+    }
+
+    @GetMapping("/page2")
+    @ApiOperation("学员分页查询")
+    public Result<PageResult> page2(UserPageQueryDTO userPageQueryDTO){
+        log.info("学员分页查询:{}",userPageQueryDTO);
+        PageResult pageResult = userService.page(userPageQueryDTO, 3);
+        return Result.success(pageResult);
+    }
+
+    @GetMapping("/page1")
+    @ApiOperation("管理员分页查询")
+    public Result<PageResult> page1(UserPageQueryDTO userPageQueryDTO){
+        log.info("管理员分页查询:{},{}",userPageQueryDTO);
+        PageResult pageResult = userService.page(userPageQueryDTO,2);
+        return Result.success(pageResult);
+    }
+
+    @ApiOperation("系统管理员修改权限")
+    @PutMapping("/editAuthority")
+    public Result editAuthority(@RequestBody UserAuthorizeDTO userAuthorizeDTO){
+        log.info("系统管理员修改权限:{}",userAuthorizeDTO);
+        userService.editAuthority(userAuthorizeDTO);
+        return Result.success();
     }
 
 }

@@ -42,8 +42,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         registry.addInterceptor(jwtTokenInterceptor)        //添加拦截器
                 .addPathPatterns("/api/**")                //拦截地址
                 .excludePathPatterns("/api/user/login")        //排除
-                //TODO 测试跳过拦截，记得要删
-                .excludePathPatterns("/api/upload")        //排除
                 .excludePathPatterns("/api/certificate/getByNumber");        //排除
 
     }
