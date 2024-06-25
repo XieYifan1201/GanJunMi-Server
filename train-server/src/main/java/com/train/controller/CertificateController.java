@@ -55,4 +55,12 @@ public class CertificateController {
         return Result.success();
     }
 
+    @ApiOperation("删除证书")
+    @GetMapping("/delete")
+    public Result delete(Long id){
+        log.info("删除证书：{}",id);
+        certificateService.delete(id);
+        return Result.success();
+    }
+
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.train.entity.Certificate;
 import com.train.entity.UsersCertificate;
 import com.train.vo.CertificateVO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -43,4 +44,11 @@ public interface UserCertificateMapper {
      * @param usersCertificate
      */
     void update(UsersCertificate usersCertificate);
+
+    /**
+     * 根据id删除数据
+     * @param id
+     */
+    @Delete("delete from userscertificate where id = #{id}")
+    void delete(Long id);
 }

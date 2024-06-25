@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
         //当前数据库中是否有该openid ，没有保存
         User user = userMapper.getByOpenid(openid);
         if (user == null){
-            user = User.builder().openid(openid).createTime(LocalDateTime.now()).build();
+            user = User.builder().openid(openid).createTime(LocalDateTime.now()).roleId(3).build();
             userMapper.save(user);
         }
 

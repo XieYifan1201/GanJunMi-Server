@@ -48,7 +48,7 @@ public class CertificateServiceImpl implements CertificateService {
         if (certificateVO == null){
             throw new BaseException("未查到此证书");
         }
-        certificateVO.setIdCard(certificateVO.getIdCard().substring(0,14)+"****");
+        //certificateVO.setIdCard(certificateVO.getIdCard().substring(0,14)+"****");
 
         return certificateVO;
     }
@@ -125,13 +125,30 @@ public class CertificateServiceImpl implements CertificateService {
             Certificate certificate = new Certificate();
             BeanUtils.copyProperties(certificateDTO,certificate);
             certificate.setId(certificateId);
+            certificate.setStartdate(LocalDateTime.of(certificateDTO.getStartdate(), LocalTime.MIN));
             certificateMapper.update(certificate);
         }else {
             throw new BaseException("权限不足");
         }
     }
 
-
+    /**
+     * 删除证书
+     * @param id
+     */
+    @Transactional
+    public void delete(Long id) {
+        Integer roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
+        if (roleId < 3){
+            //删除certificate表信息
+            Long certificateId = userCertificateMapper.getById(id).getCertificateId();      //certificate id
+            certificateMapper.delete(certificateId);
+            //删除userscertificate表信息
+            userCertificateMapper.delete(id);
+        }else {
+            throw new BaseException("权限不足");
+        }
+    }
 
     //判断字符串合法性判断
     public static boolean isNumber(String number,String regex) {

@@ -30,4 +30,10 @@ public interface CertificateService {
      * @param certificateDTO
      */
     void update(CertificateDTO certificateDTO);
+
+    /**
+     * 删除证书
+     * @param id
+     */
+    void delete(Long id);
 }
