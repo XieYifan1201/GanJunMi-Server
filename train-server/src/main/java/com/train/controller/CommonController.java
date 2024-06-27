@@ -1,11 +1,16 @@
 package com.train.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.train.cache.MyCache;
 import com.train.constant.MessageConstant;
 import com.train.exception.BaseException;
 import com.train.result.Result;
+import com.train.utils.HttpClientUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.util.Json;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -21,16 +26,20 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @Slf4j
 @Api(tags = "通用接口")
-@RequestMapping("")
 public class CommonController {
 
     @Value("${web.upload-path}")
     private String path;        //图片保存和下载的路径
+
+    @Autowired
+    private MyCache myCache;
 
     @PostMapping("/api/upload")
     @ApiOperation("文件上传")
@@ -65,6 +74,21 @@ public class CommonController {
             throw new BaseException(MessageConstant.NOT_FIND_IMG);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @ApiOperation("获取公众号成功发布列表")
+    @GetMapping("/getList")
+    public Result<String> getList(String offset,String count,String no_content) throws IOException {
+        log.info("获取公众号成功发布列表");
+
+        Map<String,String> map = new HashMap();
+        map.put("offset",offset);
+        map.put("count",count);
+        map.put("no_content",no_content);
+
+        String json = HttpClientUtil.doPost4Json("https://api.weixin.qq.com/cgi-bin/freepublish/batchget?access_token=" + myCache.getAccessToken(), map);
+
+        return Result.success(JSON.parseObject(json).toString());
     }
 
 
