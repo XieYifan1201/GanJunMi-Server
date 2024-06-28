@@ -7,8 +7,8 @@ train:
     username: root
     password: 123456
   wechat:
-    appid: wxfc52049f6b81c4a5
-    secret: d082ba6582d179679d70d0d143019ef5
+    appid: wx5beb660ccaea6625
+    secret: 091b50f25027863d766641443924713f
   redis:
     port: 6379
     host: localhost
