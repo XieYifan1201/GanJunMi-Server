@@ -43,7 +43,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/api/**")                //拦截地址
                 .excludePathPatterns("/api/user/login")        //排除
                 .excludePathPatterns("/api/certificate/getByNumber");        //排除
-
     }
 
 
