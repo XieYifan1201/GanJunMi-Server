@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User wxLogin(UserLoginDTO userLoginDTO) {
         User user;
-        if (userLoginDTO.getCode() != null){
+        if (userLoginDTO.getCode() != null && !userLoginDTO.getCode().isEmpty()){
             //微信小程序一键登录
             String openid = getOpenid(userLoginDTO.getCode());
 

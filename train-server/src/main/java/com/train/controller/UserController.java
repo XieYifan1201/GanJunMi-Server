@@ -55,9 +55,9 @@ public class UserController {
 
     @ApiOperation("修改管理员密码")
     @PutMapping("/editPwd")
-    public Result editPwd(Long id,String password){
-        log.info("修改管理员用户密码:{}",id);
-        userService.editPwd(id,password);
+    public Result editPwd(@RequestBody UserPwdDTO userPwdDTO){
+        log.info("修改管理员用户密码:{}",userPwdDTO.getId());
+        userService.editPwd(userPwdDTO.getId(), userPwdDTO.getPassword());
         return Result.success();
     }
 

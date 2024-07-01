@@ -15,7 +15,7 @@ public class UserAddDTO {
     @ApiModelProperty("男/女")
     private String sex;
     @ApiModelProperty("添加管理员级别 1系统管理员 2管理员")
-    private String roleId;
+    private Integer roleId;
     private String phone;
     private String idCard;
 
