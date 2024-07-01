@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user,userDTO);
         //身份证信息加密
         String idCard = userDTO.getIdCard();
-        if (idCard.length() == 18){
+        if (idCard != null && idCard.length() == 18){
             String newId = idCard.substring(0, 14) + "****";
             userDTO.setIdCard(newId);
         }
