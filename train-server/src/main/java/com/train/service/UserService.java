@@ -1,9 +1,6 @@
 package com.train.service;
 
-import com.train.dto.UserAuthorizeDTO;
-import com.train.dto.UserDTO;
-import com.train.dto.UserLoginDTO;
-import com.train.dto.UserPageQueryDTO;
+import com.train.dto.*;
 import com.train.entity.User;
 import com.train.result.PageResult;
 
@@ -41,4 +38,16 @@ public interface UserService {
      */
     void editAuthority(UserAuthorizeDTO userAuthorizeDTO);
 
+    /**
+     * 新增管理员
+     * @param userAddDTO
+     */
+    void addAdmin(UserAddDTO userAddDTO);
+
+    /**
+     * 修改管理员密码
+     * @param id
+     * @param password
+     */
+    void editPwd(Long id, String password);
 }

@@ -1,10 +1,7 @@
 package com.train.controller;
 
 import com.train.constant.JwtConstant;
-import com.train.dto.UserAuthorizeDTO;
-import com.train.dto.UserDTO;
-import com.train.dto.UserLoginDTO;
-import com.train.dto.UserPageQueryDTO;
+import com.train.dto.*;
 import com.train.entity.User;
 import com.train.properties.JwtProperties;
 import com.train.result.PageResult;
@@ -46,6 +43,24 @@ public class UserController {
 
         return Result.success(UserLoginVO.builder().token(token).roleId(user.getRoleId()).build());
     }
+
+    @ApiOperation("新增管理员")
+    @PostMapping("/addAdmin")
+    public Result addAdmin(@RequestBody UserAddDTO userAddDTO){
+        log.info("新增管理员:{}",userAddDTO);
+        userService.addAdmin(userAddDTO);
+        return Result.success();
+    }
+
+    @ApiOperation("修改管理员密码")
+    @PutMapping("/editPwd")
+    public Result editPwd(Long id,String password){
+        log.info("修改管理员用户密码:{}",id);
+        userService.editPwd(id,password);
+        return Result.success();
+    }
+
+
 
     @PutMapping("/update")
     @ApiOperation("修改用户信息")
