@@ -102,17 +102,17 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
-    public UserDTO getById() {
+    public UserVO getById() {
         User user = userMapper.getById(BaseContext.getCurrentId());
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user,userDTO);
+        UserVO userVO = new UserVO();
+        BeanUtils.copyProperties(user,userVO);
         //身份证信息加密
-        String idCard = userDTO.getIdCard();
+        String idCard = userVO.getIdCard();
         if (idCard != null && idCard.length() == 18){
             String newId = idCard.substring(0, 14) + "****";
-            userDTO.setIdCard(newId);
+            userVO.setIdCard(newId);
         }
-        return userDTO;
+        return userVO;
     }
 
     /**

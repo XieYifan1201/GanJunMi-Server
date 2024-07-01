@@ -3,6 +3,7 @@ package com.train.service;
 import com.train.dto.*;
 import com.train.entity.User;
 import com.train.result.PageResult;
+import com.train.vo.UserVO;
 
 public interface UserService {
     /**
@@ -23,7 +24,7 @@ public interface UserService {
      * @param
      * @return
      */
-    UserDTO getById();
+    UserVO getById();
 
     /**
      * 分页查询

@@ -9,6 +9,7 @@ import com.train.result.Result;
 import com.train.service.UserService;
 import com.train.utils.JwtUtil;
 import com.train.vo.UserLoginVO;
+import com.train.vo.UserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +75,7 @@ public class UserController {
     @ApiOperation("获取用户信息")
     public Result getById(){
         log.info("获取用户信息");
-        UserDTO userDTO = userService.getById();
+        UserVO userDTO = userService.getById();
         return Result.success(userDTO);
     }
 
