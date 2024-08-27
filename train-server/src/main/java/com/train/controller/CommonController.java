@@ -37,6 +37,8 @@ public class CommonController {
 
     @Value("${web.upload-path}")
     private String path;        //图片保存和下载的路径
+    @Value("${web.qrcode-path}")
+    private String qrcodePath;  //二维码保存路径
 
     @Autowired
     private MyCache myCache;
@@ -45,6 +47,18 @@ public class CommonController {
     @ApiOperation("文件上传")
     public Result upload(MultipartFile image, HttpServletRequest request) throws IOException {
         log.info("文件上传:{}",image);
+
+        // 文件大小检查
+        long fileSize = image.getSize();
+        if (fileSize < 50 * 1024 || fileSize > 3 * 1024 * 1024) {
+            throw new BaseException("上传文件大小需为50KB-3MB");
+        }
+
+        // 检查文件类型是否为图片
+        String contentType = image.getContentType();
+        if (!contentType.startsWith("image")) {
+            return Result.error("上传的文件不是图片");
+        }
 
         //获取原始文件名
         String originalFilename = image.getOriginalFilename();
@@ -59,9 +73,36 @@ public class CommonController {
         return Result.success(imgPath);
     }
 
+    /**
+     * 获取图片
+     * @param filename
+     * @return
+     */
     @GetMapping("/files/{filename:.+}")
     public ResponseEntity<Resource> serveFile(@PathVariable String filename){
         Path file = Paths.get(path).resolve(filename);
+        try {
+            Resource resource = new UrlResource(file.toUri());
+            if (resource.exists() && resource.isReadable()){
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                        .contentType(MediaType.IMAGE_PNG)
+                        .body(resource);
+            }
+        } catch (MalformedURLException e) {
+            throw new BaseException(MessageConstant.NOT_FIND_IMG);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    /**
+     * 获取二维码图片
+     * @param filename
+     * @return
+     */
+    @GetMapping("/files/qrcode/{filename:.+}")
+    public ResponseEntity<Resource> serveFile1(@PathVariable String filename){
+        Path file = Paths.get(qrcodePath).resolve(filename);
         try {
             Resource resource = new UrlResource(file.toUri());
             if (resource.exists() && resource.isReadable()){

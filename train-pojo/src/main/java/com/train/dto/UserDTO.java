@@ -13,5 +13,6 @@ public class UserDTO {
     private String sex;
     private String phone;
     private String idCard;
+    private String image;
 
 }

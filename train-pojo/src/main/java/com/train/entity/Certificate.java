@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,10 +17,11 @@ public class Certificate implements Serializable {
 
     //数据库Certificate表的实体类
 
-    private Long id;
+    private int id;
     private String title;
-    private LocalDateTime startdate;
-    private Double expiredYear;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String trainUnit;
+    private Integer trainsInfoId;
 
 }

@@ -1,17 +1,20 @@
 package com.train.controller;
 
 import com.train.dto.CertificateDTO;
+import com.train.dto.StudentIdsDTO;
 import com.train.dto.UserPageQueryDTO;
 import com.train.result.PageResult;
 import com.train.result.Result;
 import com.train.service.CertificateService;
 import com.train.vo.CertificateVO;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 
 @RestController
 @Api(tags = "证书相关接口")
@@ -31,6 +34,8 @@ public class CertificateController {
         return Result.success(certificateVO);
     }
 
+
+    /*
     @PostMapping("/save")
     @ApiOperation("添加证书")
     public Result save(@RequestBody CertificateDTO certificateDTO){
@@ -62,5 +67,7 @@ public class CertificateController {
         certificateService.delete(id);
         return Result.success();
     }
+     */
 
 }
+

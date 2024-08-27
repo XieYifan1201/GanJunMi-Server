@@ -1,0 +1,30 @@
+package com.train.vo;
+
+import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class TrainsClassVO {
+
+    @ApiModelProperty("id")
+    private int trainsClassId;
+    @ApiModelProperty("培训班次")
+    private String trainsClassName;
+    @ApiModelProperty("开班日期")
+    private LocalDate startDate;
+    @ApiModelProperty("结班日期")
+    private LocalDate endDate;
+    @ApiModelProperty("培训期次id")
+    private int trainsInfoId;
+    @ApiModelProperty("报名班次人数")
+    private int count;
+
+}

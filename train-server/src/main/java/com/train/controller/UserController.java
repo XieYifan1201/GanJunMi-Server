@@ -1,6 +1,7 @@
 package com.train.controller;
 
 import com.train.constant.JwtConstant;
+import com.train.context.BaseContext;
 import com.train.dto.*;
 import com.train.entity.User;
 import com.train.properties.JwtProperties;
@@ -42,7 +43,18 @@ public class UserController {
         claims.put("openid",user.getOpenid());
         String token = JwtUtil.createJWT(jwtProperties.getSecretKey(), jwtProperties.getTtl(), claims);
 
-        return Result.success(UserLoginVO.builder().token(token).roleId(user.getRoleId()).build());
+        return Result.success(UserLoginVO.builder().
+                token(token).roleId(user.getRoleId()).name(user.getName())
+                        .sex(user.getSex()).image(user.getImage()).id(user.getId())
+                        .idCard(user.getIdCard()).phone(user.getPhone()).build());
+    }
+
+    @ApiOperation("用户证件照上传")
+    @GetMapping("/addImage")
+    public Result addImage(String path){
+        log.info("用户证件照上传:{}",path);
+        userService.addImage(path);
+        return Result.success();
     }
 
     @ApiOperation("新增管理员")
@@ -53,11 +65,27 @@ public class UserController {
         return Result.success();
     }
 
-    @ApiOperation("修改管理员密码")
-    @PutMapping("/editPwd")
-    public Result editPwd(@RequestBody UserPwdDTO userPwdDTO){
-        log.info("修改管理员用户密码:{}",userPwdDTO.getId());
-        userService.editPwd(userPwdDTO.getId(), userPwdDTO.getPassword());
+    @ApiOperation("重置管理员密码")
+    @GetMapping("/resetPwd")
+    public Result resetPwd(Long id){
+        log.info("重置管理员密码:{}",id);
+        userService.resetPwd(id);
+        return Result.success();
+    }
+
+    @ApiOperation("修改自己密码（管理员）")
+    @GetMapping("/editPwd")
+    public Result editPwd(String password){
+        log.info("修改密码:{}",password);
+        userService.editPwd(BaseContext.getCurrentId(),password);
+        return Result.success();
+    }
+
+    @ApiOperation("删除管理员")
+    @GetMapping("/delete")
+    public Result delete(Long id){
+        log.info("删除管理员:{}",id);
+        userService.delete(id);
         return Result.success();
     }
 
@@ -73,12 +101,13 @@ public class UserController {
 
     @GetMapping("/getById")
     @ApiOperation("获取用户信息")
-    public Result getById(){
+    public Result<UserVO> getById(){
         log.info("获取用户信息");
         UserVO userDTO = userService.getById();
         return Result.success(userDTO);
     }
 
+    /*
     @GetMapping("/page2")
     @ApiOperation("学员分页查询")
     public Result<PageResult> page2(UserPageQueryDTO userPageQueryDTO){
@@ -87,11 +116,13 @@ public class UserController {
         return Result.success(pageResult);
     }
 
+     */
+
     @GetMapping("/page1")
     @ApiOperation("管理员分页查询")
     public Result<PageResult> page1(UserPageQueryDTO userPageQueryDTO){
         log.info("管理员分页查询:{},{}",userPageQueryDTO);
-        PageResult pageResult = userService.page(userPageQueryDTO,2);
+        PageResult pageResult = userService.page(userPageQueryDTO);
         return Result.success(pageResult);
     }
 

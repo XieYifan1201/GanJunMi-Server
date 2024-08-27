@@ -1,6 +1,7 @@
 package com.train.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -23,6 +24,7 @@ import java.util.Map;
 /**
  * Http工具类
  */
+@Slf4j
 public class HttpClientUtil {
 
     static final  int TIMEOUT_MSEC = 5 * 1000;
@@ -143,6 +145,7 @@ public class HttpClientUtil {
                 for (Map.Entry<String, String> param : paramMap.entrySet()) {
                     jsonObject.put(param.getKey(),param.getValue());
                 }
+
                 StringEntity entity = new StringEntity(jsonObject.toString(),"utf-8");
                 //设置请求编码
                 entity.setContentEncoding("utf-8");
@@ -169,6 +172,53 @@ public class HttpClientUtil {
 
         return resultString;
     }
+
+
+    /**
+     * 发送POST方式请求
+     * @param url
+     * @param param  json字符串
+     * @return
+     * @throws IOException
+     */
+    public static String doPostJson(String url, String param) throws IOException {
+        // 创建Httpclient对象
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        String resultString = "";
+
+        try {
+            // 创建Http Post请求
+            HttpPost httpPost = new HttpPost(url);
+
+            if (param.length() > 0) {
+
+                StringEntity entity = new StringEntity(param,"utf-8");
+                //设置请求编码
+                entity.setContentEncoding("utf-8");
+                //设置数据类型
+                entity.setContentType("application/json");
+                httpPost.setEntity(entity);
+            }
+
+            httpPost.setConfig(builderRequestConfig());
+
+            // 执行http请求
+            response = httpClient.execute(httpPost);
+
+            resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            try {
+                response.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return resultString;
+    }
+
     private static RequestConfig builderRequestConfig() {
         return RequestConfig.custom()
                 .setConnectTimeout(TIMEOUT_MSEC)

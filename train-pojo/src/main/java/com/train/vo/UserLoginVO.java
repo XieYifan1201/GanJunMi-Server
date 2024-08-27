@@ -15,5 +15,10 @@ public class UserLoginVO implements Serializable {
 
     private String token;
     private Integer roleId;
-
+    private String name;
+    private String idCard;
+    private String phone;
+    private String sex;
+    private String image;
+    private Long id;
 }

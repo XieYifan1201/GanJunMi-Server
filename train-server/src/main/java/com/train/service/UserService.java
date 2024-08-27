@@ -29,10 +29,9 @@ public interface UserService {
     /**
      * 分页查询
      * @param userPageQueryDTO
-     * @param role
      * @return
      */
-    PageResult page(UserPageQueryDTO userPageQueryDTO, Integer role);
+    PageResult page(UserPageQueryDTO userPageQueryDTO);
 
     /**
      * 系统管理员修改权限
@@ -45,10 +44,29 @@ public interface UserService {
      */
     void addAdmin(UserAddDTO userAddDTO);
 
+
     /**
-     * 修改管理员密码
+     * 管理员密码重置
      * @param id
+     */
+    void resetPwd(Long id);
+
+    /**
+     * 修改密码
+     * @param currentId
      * @param password
      */
-    void editPwd(Long id, String password);
+    void editPwd(Long currentId, String password);
+
+    /**
+     * 删除管理员
+     * @param id
+     */
+    void delete(Long id);
+
+    /**
+     * 用户证件照上传
+     * @param path
+     */
+    void addImage(String path);
 }

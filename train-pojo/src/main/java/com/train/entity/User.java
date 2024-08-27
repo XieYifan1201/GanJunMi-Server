@@ -25,6 +25,7 @@ public class User implements Serializable {
     private String idCard;
     private Integer roleId;
     private LocalDateTime createTime;
+    private String image;
 
 
 

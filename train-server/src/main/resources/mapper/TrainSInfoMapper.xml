@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.train.mapper.TrainSInfoMapper">
+
+    <insert id="add" useGeneratedKeys="true" keyProperty="trainsId">
+        insert into trainsinfo (trainstitle, trainsname, trainshour, trainscontent, trainscount, isstart)
+        values (#{trainsTitle}, #{trainsName}, #{trainsHour}, #{trainsContent}, #{trainsCount}, #{isStart})
+    </insert>
+
+    <update id="update">
+        update trainsinfo
+        <set>
+            <if test="trainsTitle != null">trainsTitle = #{trainsTitle},</if>
+            <if test="trainsName != null">trainsName = #{trainsName},</if>
+            <if test="trainsHour != null">trainsHour = #{trainsHour},</if>
+            <if test="trainsContent != null">trainsContent = #{trainsContent},</if>
+            <if test="trainsCount!= null">trainsCount = #{trainsCount},</if>
+            <if test="isStart != null">isStart = #{isStart},</if>
+        </set>
+        where trainsId = #{trainsId}
+    </update>
+    <select id="pageQuery" resultType="com.train.entity.TrainsInfo">
+        select * from trainsinfo
+        <where>
+            <if test="state == 0">and isStart = 1</if>
+            <if test="name != null">
+                and trainsName like concat('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

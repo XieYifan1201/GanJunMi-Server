@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,23 +14,30 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CertificateVO {
-    @ApiModelProperty("用户证书表主键")
-    private Long id;
+
     @ApiModelProperty("证书编号")
-    private String cerNumber;
+    private String CertificateNo;
     @ApiModelProperty("证书标题")
     private String title;
-    @ApiModelProperty("证书开始日期")
-    private LocalDateTime startdate;
-    @ApiModelProperty("证书有效期")
-    private Double expiredYear;
+    @ApiModelProperty("证书有效开始日期")
+    private LocalDate startDate;
+    @ApiModelProperty("证书有效结束日期")
+    private LocalDate endDate;
     @ApiModelProperty("颁证单位")
     private String trainUnit;
     @ApiModelProperty("证书获得人")
     private String name;
-    @ApiModelProperty("证书获得人身份证号")
-    private String idCard;
+    @ApiModelProperty("证书二维码")
+    private String QRcode;
     @ApiModelProperty("照片")
     private String image;
+    @ApiModelProperty("培训开始日期")
+    private LocalDate trainStartDate;
+    @ApiModelProperty("培训结束日期")
+    private LocalDate trainEndDate;
+    @ApiModelProperty("培训班名称")
+    private String trainsTitle;
+    @ApiModelProperty("学时")
+    private int trainsHour;
 
 }

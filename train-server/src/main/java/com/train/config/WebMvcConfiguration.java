@@ -2,6 +2,7 @@ package com.train.config;
 
 import com.train.interceptor.JwtTokenInterceptor;
 import com.train.json.JacksonObjectMapper;
+import com.train.properties.WeChatProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
     private JwtTokenInterceptor jwtTokenInterceptor;
+    @Autowired
+    private WeChatProperties weChatProperties;
 
     /**
      * 注册自定义拦截器
@@ -38,6 +41,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
      */
     protected void addInterceptors(InterceptorRegistry registry) {
         log.info("开始注册自定义拦截器...");
+        log.info("AppID:{}",weChatProperties.getAppid());
 
         registry.addInterceptor(jwtTokenInterceptor)        //添加拦截器
                 .addPathPatterns("/api/**")                //拦截地址
@@ -55,7 +59,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("军密安项目接口文档")
                 .version("1.0")
-                .description("苍穹外卖项目接口文档")
+                .description("军密安项目接口文档")
                 .build();
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)

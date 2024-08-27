@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
             String openid = getOpenid(userLoginDTO.getCode());
 
             if (openid == null){
-
+                throw new BaseException("微信登录失败");
             }
 
             //当前数据库中是否有该openid ，没有保存
@@ -77,17 +77,26 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 用户证件照上传
+     * @param path
+     */
+    @Override
+    public void addImage(String path) {
+        userMapper.addImage(path,BaseContext.getCurrentId());
+    }
+
+    /**
      * 修改用户信息
      * @param userDTO
      */
     @Override
     public void update(UserDTO userDTO) {
         //手机号合法性判断
-        if (userDTO.getPhone() != null && !isNumber(userDTO.getPhone(),"^1[3-9]\\d{9}$")){
+        if (userDTO.getPhone() != null && !isNumber(userDTO.getPhone(), "^1[3-9]\\d{9}$")) {
             throw new BaseException("输入数据格式不正确");
         }
         //身份证号合法性
-        if (userDTO.getIdCard() != null && !isNumber(userDTO.getIdCard(),"^(\\d{17})([0-9]|X|x)$")){
+        if (userDTO.getIdCard() != null && !isNumber(userDTO.getIdCard(), "^(\\d{17})([0-9]|X|x)$")) {
             throw new BaseException("输入数据格式不正确");
         }
         User user = new User();
@@ -106,32 +115,27 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.getById(BaseContext.getCurrentId());
         UserVO userVO = new UserVO();
         BeanUtils.copyProperties(user,userVO);
+        /*
         //身份证信息加密
         String idCard = userVO.getIdCard();
         if (idCard != null && idCard.length() == 18){
             String newId = idCard.substring(0, 14) + "****";
             userVO.setIdCard(newId);
         }
+         */
         return userVO;
     }
 
     /**
      * 分页查询
      * @param userPageQueryDTO
-     * @param role  类型
      */
     @Override
-    public PageResult page(UserPageQueryDTO userPageQueryDTO, Integer role) {
+    public PageResult page(UserPageQueryDTO userPageQueryDTO) {
         User user = userMapper.getById(BaseContext.getCurrentId());
-        if (user.getRoleId() != 3){     //非管理员不能查询用户信息
+        if (user.getRoleId() < 3){     //非管理员不能查询用户信息
             PageHelper.startPage(userPageQueryDTO.getPage(), userPageQueryDTO.getPageSize());
-            Page<UserVO> p = userMapper.pageQuery(userPageQueryDTO.getName(),role);
-            for (UserVO userVO : p) {
-                String idCard = userVO.getIdCard();
-                if (idCard != null && idCard.length() == 18){
-                    userVO.setIdCard((idCard.substring(0,14) + "****"));
-                }
-            }
+            Page<UserVO> p = userMapper.pageQuery(userPageQueryDTO.getName());
             return new PageResult(p.getTotal(),p.getResult());
         }else {
             throw new BaseException("权限不足");
@@ -162,10 +166,12 @@ public class UserServiceImpl implements UserService {
         int roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
         if (roleId == 1){
             //系统管理员才能添加管理员用户
-            //密码加密
-            userAddDTO.setPassword(DigestUtils.md5DigestAsHex(userAddDTO.getPassword().getBytes()));
             User user = new User();
             BeanUtils.copyProperties(userAddDTO,user);
+            // TODO
+            user.setImage("http://218.65.5.217:8103/files/user.png");
+            //密码加密
+            user.setPassword(DigestUtils.md5DigestAsHex("trains@123456".getBytes()));
             user.setCreateTime(LocalDateTime.now());
             userMapper.save(user);
         }else {
@@ -174,21 +180,40 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 修改管理员密码
+     * 管理员重置密码
+     * @param id
+     */
+    @Override
+    public void resetPwd(Long id) {
+        String password = DigestUtils.md5DigestAsHex("trains@123456".getBytes());
+        userMapper.editPwd(id,password);
+    }
+
+    /**
+     * 修改密码
      * @param id
      * @param password
      */
     @Override
     public void editPwd(Long id, String password) {
-        if (id == null){
-            //id 为空则修改自己的密码
-            id = BaseContext.getCurrentId();
-        }
         password = DigestUtils.md5DigestAsHex(password.getBytes());
         userMapper.editPwd(id,password);
-
     }
 
+    /**
+     * 删除管理员
+     * @param id
+     */
+    @Override
+    public void delete(Long id) {
+        int roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
+        if (roleId == 1){
+            //只有系统管理员才能删除管理员
+            userMapper.delete(id);
+        }else {
+            throw new BaseException("权限不足");
+        }
+    }
 
     //网络请求，向微信服务器获取openId
     private String getOpenid(String code) {

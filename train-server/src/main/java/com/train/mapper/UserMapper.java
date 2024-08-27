@@ -5,6 +5,7 @@ import com.train.dto.UserAddDTO;
 import com.train.dto.UserDTO;
 import com.train.entity.User;
 import com.train.vo.UserVO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -45,10 +46,9 @@ public interface UserMapper {
 
     /**
      * 分页查询
-     * @param role
      * @return
      */
-    Page<UserVO> pageQuery(String name,Integer role);
+    Page<UserVO> pageQuery(String name);
 
     /**
      * 通过用户名和密码进行查询
@@ -71,4 +71,25 @@ public interface UserMapper {
      */
     @Update("update users set password = #{password} where id = #{id}")
     void editPwd(Long id, String password);
+
+    /**
+     * 重置密码
+     * @param id
+     */
+    @Update("update users set password = 'trains@123456' where id = #{id}")
+    void resetPwd(int id);
+
+    /**
+     * 删除管理员
+     * @param id
+     */
+    @Delete("delete from users where id = #{id}")
+    void delete(Long id);
+
+    /**
+     * 用户证件照上传
+     * @param path
+     */
+    @Update("update users set image = #{path} where id = #{id}")
+    void addImage(String path,Long id);
 }

@@ -1,9 +1,12 @@
 package com.train.service;
 
 import com.train.dto.CertificateDTO;
+import com.train.dto.StudentIdsDTO;
 import com.train.dto.UserPageQueryDTO;
 import com.train.result.PageResult;
 import com.train.vo.CertificateVO;
+
+import java.util.List;
 
 public interface CertificateService {
     /**
@@ -36,4 +39,5 @@ public interface CertificateService {
      * @param id
      */
     void delete(Long id);
+
 }

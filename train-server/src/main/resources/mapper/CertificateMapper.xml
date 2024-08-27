@@ -2,19 +2,31 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.train.mapper.CertificateMapper">
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into certificate (title, startdate, expiredYear, trainUnit)
-        values (#{title},#{startdate},#{expiredYear},#{trainUnit})
+    <insert id="save">
+        insert into certificate (title, startDate, endDate, trainUnit, trainsInfoId)
+        values (#{title}, #{startDate}, #{endDate}, #{trainUnit}, #{trainsInfoId})
     </insert>
     <update id="update">
         update certificate
         <set>
-            <if test="title != null">title = #{title},</if>
-            <if test="startdate != null">startdate = #{startdate},</if>
-            <if test="expiredYear != null">expiredYear = #{expiredYear},</if>
-            <if test="trainUnit != null">trainUnit = #{trainUnit},</if>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="startDate != null">
+                startDate = #{startDate},
+            </if>
+            <if test="endDate != null">
+                endDate = #{endDate},
+            </if>
+            <if test="trainUnit != null">
+                trainUnit = #{trainUnit},
+            </if>
+            <if test="trainsInfoId != null">
+                trainsInfoId = #{trainsInfoId},
+            </if>
         </set>
-        where id = #{id}
+        where trainsInfoId = #{trainsInfoId}
     </update>
+
 
 </mapper>

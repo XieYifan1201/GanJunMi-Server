@@ -1,39 +1,37 @@
 package com.train.service.Impl;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
 import com.train.context.BaseContext;
 import com.train.dto.CertificateDTO;
+import com.train.dto.StudentIdsDTO;
 import com.train.dto.UserPageQueryDTO;
-import com.train.entity.Certificate;
-import com.train.entity.UsersCertificate;
+import com.train.entity.*;
 import com.train.exception.BaseException;
-import com.train.mapper.CertificateMapper;
-import com.train.mapper.UserCertificateMapper;
-import com.train.mapper.UserMapper;
+import com.train.mapper.*;
 import com.train.result.PageResult;
-import com.train.result.Result;
 import com.train.service.CertificateService;
 import com.train.vo.CertificateVO;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
 public class CertificateServiceImpl implements CertificateService {
 
     @Autowired
-    private UserCertificateMapper userCertificateMapper;
-    @Autowired
     private CertificateMapper certificateMapper;
+    @Autowired
+    private StudentCertificateMapper studentCertificateMapper;
+    @Autowired
+    private StudentMapper studentMapper;
+    @Autowired
+    private TrainsClassMapper trainsClassMapper;
+    @Autowired
+    private TrainSInfoMapper trainSInfoMapper;
     @Autowired
     private UserMapper userMapper;
 
@@ -44,13 +42,21 @@ public class CertificateServiceImpl implements CertificateService {
      */
     @Override
     public CertificateVO getByNumber(String number) {
-        CertificateVO certificateVO = userCertificateMapper.getByNumber(number);
-        if (certificateVO == null){
-            throw new BaseException("未查到此证书");
+        StudentCertificate sc = studentCertificateMapper.getByCertificateNo(number);
+        if (sc == null){
+            throw new BaseException("证书不存在");
         }
-        //certificateVO.setIdCard(certificateVO.getIdCard().substring(0,14)+"****");
-
-        return certificateVO;
+        Student student = studentMapper.getById(sc.getStudentId());
+        TrainsClass trainsClass = trainsClassMapper.getById(sc.getTrainsClassId());
+        Certificate certificate = certificateMapper.getById(sc.getCertificateId());
+        TrainsInfo trainsInfo = trainSInfoMapper.getById(certificate.getTrainsInfoId());
+        return CertificateVO.builder()
+                .CertificateNo(sc.getCertificateNo()).title(certificate.getTitle())
+                .startDate(certificate.getStartDate()).endDate(certificate.getEndDate())
+                .trainUnit(certificate.getTrainUnit()).name(student.getName())
+                .QRcode(sc.getQRcode()).image(student.getImage())
+                .trainStartDate(trainsClass.getStartDate()).trainEndDate(trainsClass.getEndDate())
+                .trainsTitle(trainsInfo.getTrainsTitle()).trainsHour(trainsInfo.getTrainsHour()).build();
     }
 
     /**
@@ -59,27 +65,7 @@ public class CertificateServiceImpl implements CertificateService {
      */
     @Transactional
     public void save(CertificateDTO certificateDTO) {
-        Integer roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
-        if (roleId < 3){
-            //身份证号合法性
-            if (!isNumber(certificateDTO.getIdCard(),"^(\\d{17})([0-9]|X|x)$") || certificateDTO.getStartdate() == null || certificateDTO.getImage() == null){
-                throw new BaseException("输入数据格式不正确");
-            }
 
-
-            //将certificate的数据添加
-            Certificate certificate = new Certificate();
-            BeanUtils.copyProperties(certificateDTO,certificate);
-            certificate.setStartdate(LocalDateTime.of(certificateDTO.getStartdate(), LocalTime.MIN));
-            certificateMapper.save(certificate);
-            //将usersCertificate的数据添加
-            UsersCertificate usersCertificate = new UsersCertificate();
-            BeanUtils.copyProperties(certificateDTO,usersCertificate);
-            usersCertificate.setCertificateId(certificate.getId());
-            userCertificateMapper.save(usersCertificate);
-        }else{
-            throw new BaseException("权限不足");
-        }
     }
 
     /**
@@ -90,8 +76,6 @@ public class CertificateServiceImpl implements CertificateService {
     public PageResult pageQuery(UserPageQueryDTO pageQueryDTO) {
         Integer roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
         if (roleId < 3){
-            PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
-            Page<CertificateVO> page = userCertificateMapper.pageQuery(pageQueryDTO.getName());
             /*
             //身份证信息隐藏
             for (CertificateVO certificateVO : page) {
@@ -101,7 +85,7 @@ public class CertificateServiceImpl implements CertificateService {
                 }
             }
              */
-            return new PageResult(page.getTotal(),page.getResult());
+            return null;
         }else {
             throw new BaseException("权限不足");
         }
@@ -115,18 +99,20 @@ public class CertificateServiceImpl implements CertificateService {
     public void update(CertificateDTO certificateDTO) {
         Integer roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
         if (roleId < 3){
+            /*
             //将usersCertificate的数据修改
             UsersCertificate usersCertificate = new UsersCertificate();
             BeanUtils.copyProperties(certificateDTO,usersCertificate);
             userCertificateMapper.update(usersCertificate);
             //将certificate的数据修改
-            Long certificateId = userCertificateMapper.getById(certificateDTO.getId()).getCertificateId();
+            int certificateId = userCertificateMapper.getById(certificateDTO.getId()).getCertificateId();
 
             Certificate certificate = new Certificate();
             BeanUtils.copyProperties(certificateDTO,certificate);
             certificate.setId(certificateId);
-            certificate.setStartdate(LocalDateTime.of(certificateDTO.getStartdate(), LocalTime.MIN));
+            //certificate.setStartdate(LocalDateTime.of(certificateDTO.getStartdate(), LocalTime.MIN));
             certificateMapper.update(certificate);
+             */
         }else {
             throw new BaseException("权限不足");
         }
@@ -140,11 +126,6 @@ public class CertificateServiceImpl implements CertificateService {
     public void delete(Long id) {
         Integer roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
         if (roleId < 3){
-            //删除certificate表信息
-            Long certificateId = userCertificateMapper.getById(id).getCertificateId();      //certificate id
-            certificateMapper.delete(certificateId);
-            //删除userscertificate表信息
-            userCertificateMapper.delete(id);
         }else {
             throw new BaseException("权限不足");
         }
