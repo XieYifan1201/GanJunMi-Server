@@ -26,5 +26,9 @@ public class TrainsClassVO {
     private int trainsInfoId;
     @ApiModelProperty("报名班次人数")
     private int count;
+    @ApiModelProperty("报名最多人数")
+    private int amount;
+    @ApiModelProperty("培训地点")
+    private String position;
 
 }

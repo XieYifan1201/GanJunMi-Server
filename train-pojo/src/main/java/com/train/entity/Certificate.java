@@ -20,7 +20,7 @@ public class Certificate implements Serializable {
     private int id;
     private String title;
     private LocalDate startDate;
-    private LocalDate endDate;
+    private String deadline;
     private String trainUnit;
     private Integer trainsInfoId;
 

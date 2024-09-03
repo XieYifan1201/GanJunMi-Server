@@ -67,4 +67,10 @@ public interface TrainSInfoMapper {
     @Update("update trainsinfo set trainsCount = #{count} where trainsId = #{id}")
     void updateCount(int id, int count);
 
+    /**
+     * 获取最后一期期数
+     */
+    @Select("select * from trainsinfo order by trainsId desc limit 1")
+    TrainsInfo getLast();
+
 }

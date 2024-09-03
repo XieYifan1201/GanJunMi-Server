@@ -3,22 +3,22 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.train.mapper.CertificateMapper">
     <insert id="save">
-        insert into certificate (title, startDate, endDate, trainUnit, trainsInfoId)
-        values (#{title}, #{startDate}, #{endDate}, #{trainUnit}, #{trainsInfoId})
+        insert into certificate (title, startDate, deadline, trainUnit, trainsInfoId)
+        values (#{title}, #{startDate}, #{deadline}, #{trainUnit}, #{trainsInfoId})
     </insert>
     <update id="update">
         update certificate
         <set>
-            <if test="title != null">
+            <if test="title != null and title != ''">
                 title = #{title},
             </if>
             <if test="startDate != null">
                 startDate = #{startDate},
             </if>
-            <if test="endDate != null">
-                endDate = #{endDate},
+            <if test="deadline != null and deadline != ''">
+                deadline = #{deadline},
             </if>
-            <if test="trainUnit != null">
+            <if test="trainUnit != null and trainUnit != ''">
                 trainUnit = #{trainUnit},
             </if>
             <if test="trainsInfoId != null">

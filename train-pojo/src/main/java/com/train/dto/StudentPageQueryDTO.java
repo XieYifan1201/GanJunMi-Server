@@ -18,6 +18,8 @@ public class StudentPageQueryDTO implements Serializable {
     private String sex;
     @ApiModelProperty("工作单位")
     private String workUnit;
+    @ApiModelProperty("是否为倒序")
+    private boolean reverse;
 
     //页码
     private Integer page;

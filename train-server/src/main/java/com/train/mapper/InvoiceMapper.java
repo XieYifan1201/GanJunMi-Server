@@ -48,6 +48,6 @@ public interface InvoiceMapper {
      * @param invoiceHead
      * @return
      */
-    @Select("select * from invoiceinfo where invoiceHead = ${invoiceHead}")
+    @Select("select * from invoiceinfo where invoiceHead = ${invoiceHead} order by id desc limit 1")
     CompanyInfo getCompanyInfo(String invoiceHead);
 }

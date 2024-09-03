@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,5 +29,11 @@ public class StudentVO {
     private String image;
     @ApiModelProperty("是否颁发证书")
     private boolean isCertificate;
+
+    @ApiModelProperty("报名日期")
+    private LocalDateTime date;
+    @ApiModelProperty("是否缴费")
+    private boolean pay;
+
 
 }

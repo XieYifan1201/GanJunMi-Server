@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -19,5 +21,7 @@ public class StudentCertificate {
     private String CertificateNo;
     private int certificateId;
     private String QRcode;
+    private LocalDateTime date;
+    private boolean pay;
 
 }

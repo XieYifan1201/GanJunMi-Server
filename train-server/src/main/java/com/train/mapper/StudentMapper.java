@@ -48,7 +48,7 @@ public interface StudentMapper {
      * @param name
      * @return
      */
-    Page<StudentInfoVo> getByBatch1(String name,int state);
+    Page<StudentInfoVo> getByBatch1(String name,int state,boolean reverse);
 
     /**
      * 根据身份证号获取学员信息
@@ -65,4 +65,11 @@ public interface StudentMapper {
      */
     @Update("update studentinfo set invoiceId = #{invoiceId} where id = #{id}")
     void updateInvoiceId(Long id,int invoiceId);
+
+    /**
+     * 修改学员的缴费状态
+     * @param id
+     * @param payStatue
+     */
+    void updatePayStatus(int id, boolean payStatue);
 }

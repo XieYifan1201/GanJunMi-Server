@@ -27,4 +27,7 @@ public class TrainsInfo {
     @ApiModelProperty("是否允许报名")
     private boolean isStart;
 
+    @ApiModelProperty("培训地址")
+    private String trainsAddress;
+
 }

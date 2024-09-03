@@ -21,8 +21,8 @@ public class CertificateVO {
     private String title;
     @ApiModelProperty("证书有效开始日期")
     private LocalDate startDate;
-    @ApiModelProperty("证书有效结束日期")
-    private LocalDate endDate;
+    @ApiModelProperty("证书有效年限")
+    private String deadline;
     @ApiModelProperty("颁证单位")
     private String trainUnit;
     @ApiModelProperty("证书获得人")

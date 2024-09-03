@@ -4,8 +4,8 @@
 <mapper namespace="com.train.mapper.TrainSInfoMapper">
 
     <insert id="add" useGeneratedKeys="true" keyProperty="trainsId">
-        insert into trainsinfo (trainstitle, trainsname, trainshour, trainscontent, trainscount, isstart)
-        values (#{trainsTitle}, #{trainsName}, #{trainsHour}, #{trainsContent}, #{trainsCount}, #{isStart})
+        insert into trainsinfo (trainstitle, trainsname, trainshour, trainscontent, trainscount, isstart,trainsAddress)
+        values (#{trainsTitle}, #{trainsName}, #{trainsHour}, #{trainsContent}, #{trainsCount}, #{isStart},#{trainsAddress})
     </insert>
 
     <update id="update">
@@ -17,6 +17,7 @@
             <if test="trainsContent != null">trainsContent = #{trainsContent},</if>
             <if test="trainsCount!= null">trainsCount = #{trainsCount},</if>
             <if test="isStart != null">isStart = #{isStart},</if>
+            <if test="trainsAddress != null">trainsAddress = #{trainsAddress},</if>
         </set>
         where trainsId = #{trainsId}
     </update>

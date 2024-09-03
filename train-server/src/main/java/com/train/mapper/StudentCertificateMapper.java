@@ -8,7 +8,6 @@ import com.train.vo.StudentVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public interface StudentCertificateMapper {
      * @param ids
      * @return
      */
-    List<StudentCertificate> getById(List<Integer> ids);
+    List<StudentCertificate> getByIds(List<Integer> ids);
 
     /**
      * 证书编号获取证书信息
@@ -65,7 +64,7 @@ public interface StudentCertificateMapper {
      * @param idCard
      * @return
      */
-    Page<Student> getStudentBatch(List<Integer> classIds, String name, String sex, String workUnit, String idCard);
+    Page<Student> getStudentBatch(List<Integer> classIds, String name, String sex, String workUnit, String idCard,boolean reverse);
 
     /**
      * 获取报名班次的学员总数
@@ -95,8 +94,7 @@ public interface StudentCertificateMapper {
      * @param id 学员id
      * @return
      */
-    @Select("select count(*) from studentcertificate where studentId = #{id}")
-    int getCertificateCount(Long id);
+    int getCertificateCount(Long id,boolean flag);
 
     /**
      * 获取报名班次的学员信息和发票信息
@@ -105,5 +103,21 @@ public interface StudentCertificateMapper {
      * @param state
      * @return
      */
-    Page<StudentInfoVo> getStudentBatch1(List<Integer> classIds, String name, int state);
+    Page<StudentInfoVo> getStudentBatch1(List<Integer> classIds, String name, int state,boolean reverse);
+
+    /**
+     * 更新报名信息
+     * @param studentCertificate
+     */
+    void update(StudentCertificate studentCertificate);
+
+
+    /**
+     * 批量更新报名信息(特殊)
+     * @param list
+     */
+    void updateBatch(List<StudentCertificate> list);
+
+    @Select("select * from studentcertificate where id = #{id}")
+    StudentCertificate getById(int id);
 }

@@ -13,7 +13,7 @@ public interface StudentService {
      * 学员报名
      * @param signDTO
      */
-    void sign(SignDTO signDTO,String imgPath);
+    void sign(SignDTO signDTO);
 
     /**
      * 学员信息添加
@@ -66,4 +66,30 @@ public interface StudentService {
      * @return
      */
     PageResult getByBatch1(StudentInvoicePageQueryDTO pageQueryDTO);
+
+    /**
+     * 颁发证书
+     * @param studentIdsDTO1
+     */
+    void issueCertificate(StudentIdsDTO1 studentIdsDTO1,String imgPath);
+
+    /**
+     * 撤销报名
+     * @param id
+     */
+    void cancelSign(int id);
+
+    /**
+     * 获取学员证书数量
+     * @param id
+     * @return
+     */
+    Integer getCount(Long id);
+
+    /**
+     * 修改缴费状态
+     * @param id
+     * @param payStatue
+     */
+    void updatePayStatus(int id, boolean payStatue);
 }

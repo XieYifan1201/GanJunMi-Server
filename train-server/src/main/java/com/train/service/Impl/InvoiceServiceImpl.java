@@ -78,7 +78,7 @@ public class InvoiceServiceImpl implements InvoiceService {
             throw new BaseException("当前还未报名，不能添加发票信息");
         }
         Integer invoiceId = student.getInvoiceId();
-        if (invoiceId == null ){
+        if (invoiceId == null || invoiceId == 0){
             //不存在，添加
             invoiceMapper.saveInvoice(invoiceInfo);
             studentMapper.updateInvoiceId(student.getId(),invoiceInfo.getId());

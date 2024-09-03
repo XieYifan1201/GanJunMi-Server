@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class StudentInfoVo {
 
+    //学员信息和发票信息
+
     @ApiModelProperty("学员id")
     private Long id;
     private String name;

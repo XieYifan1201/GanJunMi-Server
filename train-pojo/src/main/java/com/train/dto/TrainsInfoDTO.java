@@ -29,6 +29,9 @@ public class TrainsInfoDTO {
     private int trainsCount;
     @ApiModelProperty("是否允许报名")
     private boolean isStart;
+
+    @ApiModelProperty("培训地址")
+    private String trainsAddress;
     /*
     @ApiModelProperty("开班信息")
     List<TrainsClassDTO> classInfo;

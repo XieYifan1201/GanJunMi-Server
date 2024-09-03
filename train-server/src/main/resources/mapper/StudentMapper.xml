@@ -22,6 +22,11 @@
         </set>
         where id = #{id}
     </update>
+    <update id="updatePayStatus">
+        update studentcertificate set
+        <if test="payStatue == true">pay = 1</if>
+        <if test="payStatue == false">pay = 0</if> where id = #{id}
+    </update>
     <select id="getByBatch" resultType="com.train.entity.Student">
         select * from studentinfo
         <where>
@@ -38,6 +43,9 @@
                 and workUnit like concat('%',#{workUnit},'%')
             </if>
         </where>
+        <if test="reverse == true">
+            order by id desc
+        </if>
     </select>
 
     <select id="getByBatch1" resultType="com.train.vo.StudentInfoVo">
@@ -54,5 +62,8 @@
                 and s.invoiceId is null
             </if>
         </where>
+        <if test="reverse == true">
+            order by s.id desc
+        </if>
     </select>
 </mapper>

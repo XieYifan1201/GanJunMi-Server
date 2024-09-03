@@ -52,7 +52,7 @@ public class CertificateServiceImpl implements CertificateService {
         TrainsInfo trainsInfo = trainSInfoMapper.getById(certificate.getTrainsInfoId());
         return CertificateVO.builder()
                 .CertificateNo(sc.getCertificateNo()).title(certificate.getTitle())
-                .startDate(certificate.getStartDate()).endDate(certificate.getEndDate())
+                .startDate(certificate.getStartDate()).deadline(certificate.getDeadline())
                 .trainUnit(certificate.getTrainUnit()).name(student.getName())
                 .QRcode(sc.getQRcode()).image(student.getImage())
                 .trainStartDate(trainsClass.getStartDate()).trainEndDate(trainsClass.getEndDate())

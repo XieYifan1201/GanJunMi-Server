@@ -19,4 +19,8 @@ public class TrainsClassDTO1 {
     private LocalDate startDate;
     @ApiModelProperty("结班日期")
     private LocalDate endDate;
+    @ApiModelProperty("报名最多人数")
+    private int amount;
+    @ApiModelProperty("培训地点")
+    private String position;
 }

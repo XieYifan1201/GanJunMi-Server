@@ -44,7 +44,7 @@ public interface TrainsClassMapper {
 
 
     /**
-     * 修改报名人数
+     * 修改count字段
      * @param trainsClassId
      * @param count
      */
@@ -99,4 +99,12 @@ public interface TrainsClassMapper {
      * @return
      */
     Page<ClassesVO> getClassInfo(String name);
+
+    /**
+     * 根据班次id获取最多报名人数
+     * @param trainClassId
+     * @return
+     */
+    @Select("select amount from trainsclass where trainsClassId = #{trainClassId}")
+    Integer getAmount(Integer trainClassId);
 }

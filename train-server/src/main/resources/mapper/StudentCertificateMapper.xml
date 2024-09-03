@@ -5,8 +5,8 @@
 
 
     <insert id="save">
-        insert into studentcertificate (studentId, trainsClassId, isCertificate, CertificateNo, certificateId, QRcode)
-        values (#{studentId},#{trainsClassId},#{isCertificate},#{CertificateNo},#{certificateId},#{QRcode})
+        insert into studentcertificate (studentId, trainsClassId, isCertificate, certificateId,date,pay)
+        values (#{studentId},#{trainsClassId},#{isCertificate},#{certificateId},#{date},#{pay})
     </insert>
     <update id="updateCertificate">
         update studentcertificate set isCertificate = 1 where id in
@@ -25,7 +25,7 @@
             <if test="name != null">and i.name like concat('%',#{name},'%')</if>
         </where>
     </select>
-    <select id="getById" resultType="com.train.entity.StudentCertificate">
+    <select id="getByIds" resultType="com.train.entity.StudentCertificate">
         select * from studentcertificate where id in
         <foreach collection="ids" item="id" separator="," open="(" close=")">
             #{id}
@@ -43,6 +43,9 @@
             <if test="workUnit != null and workUnit != ''">and s.workUnit like concat('%',#{workUnit},'%')</if>
             <if test="idCard != null and idCard != ''">and s.idCard = #{idCard}</if>
         </where>
+        <if test="reverse == true">
+            order by c.id desc
+        </if>
     </select>
     <select id="getStudentBatch1" resultType="com.train.vo.StudentInfoVo">
         select s.*,i.* from studentcertificate c join studentinfo s on c.studentId = s.id
@@ -56,6 +59,30 @@
             <if test="state == 1">and s.invoiceId is not null</if>
             <if test="state == 2">and s.invoiceId is null</if>
         </where>
+        <if test="reverse == true">
+            order by c.id desc
+        </if>
     </select>
+    <select id="getCertificateCount" resultType="java.lang.Integer">
+        select count(*) from studentcertificate where studentId = #{id}
+        <if test="flag == true">and isCertificate = 1</if>
+    </select>
+
+    <update id="update">
+        update studentcertificate
+        <set>
+            <if test="isCertificate != null">isCertificate = #{isCertificate},</if>
+            <if test="CertificateNo != null">CertificateNo = #{CertificateNo},</if>
+            <if test="QRcode != null">QRcode = #{QRcode},</if>
+            <if test="pay != null">pay = #{pay},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateBatch">
+        <foreach collection="list" item="item" separator=";">
+            update studentcertificate set isCertificate = #{item.isCertificate},CertificateNo = #{item.CertificateNo},QRcode = #{item.QRcode} where id = #{item.id}
+        </foreach>
+    </update>
+
 
 </mapper>

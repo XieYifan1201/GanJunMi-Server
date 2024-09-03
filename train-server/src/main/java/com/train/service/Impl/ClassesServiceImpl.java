@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +47,7 @@ public class ClassesServiceImpl implements ClassesService {
     @Override
     @Transactional
     public void addClasses(TrainsInfoDTO trainsInfoDTO) {
+        /*
         try {
             String trainsName = trainsInfoDTO.getTrainsName();
             Pattern pattern = Pattern.compile("(\\d+)");
@@ -57,6 +59,37 @@ public class ClassesServiceImpl implements ClassesService {
         }catch (Exception exception){
             throw new BaseException("开班期数命名请按照：xxxx年第x期的格式（x为数字）");
         }
+         */
+
+        // 获取最后一期信息
+        TrainsInfo info = trainSInfoMapper.getLast();
+
+        //获取当前日期的年份
+        int year = LocalDate.now().getYear();
+        if (info == null){
+            //数据库中没有期数信息
+            trainsInfoDTO.setTrainsName(year+"年第1期");
+        }else{
+
+            Pattern pattern = Pattern.compile("(\\d+)");
+            Matcher matcher = pattern.matcher(info.getTrainsName());    //2024年第6期
+            matcher.find();
+            String y = matcher.group();//2024
+            matcher.find();
+            String c = matcher.group();//6
+
+            if (year == Integer.parseInt(y)){   //年份相同
+                int q = Integer.parseInt(c)+1;      //新期数
+                trainsInfoDTO.setTrainsName(y+"年第"+q+"期");
+            }else {
+                trainsInfoDTO.setTrainsName(year+"年第1期");
+            }
+
+        }
+
+
+
+
         //先添加TrainSInfo信息
         TrainsInfo trainsInfo = new TrainsInfo();
         BeanUtils.copyProperties(trainsInfoDTO,trainsInfo);
@@ -88,7 +121,7 @@ public class ClassesServiceImpl implements ClassesService {
             matcher.find();
             matcher.group();   //3
         }catch (Exception e){
-            throw new BaseException("培训班次命名请按照：第xx班次的格式（x为数字）");
+            throw new BaseException("培训期数命名请按照：第x期 的格式（x为数字）");
         }
         trainsClassMapper.add(trainsClassDTO);
         int count = trainSInfoMapper.getCount(trainsClassDTO.getTrainsInfoId());

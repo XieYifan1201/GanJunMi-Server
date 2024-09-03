@@ -1,7 +1,6 @@
 package com.train.service.Impl;
 
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.crypto.asymmetric.Sign;
 import cn.hutool.extra.qrcode.QrCodeUtil;
 import cn.hutool.extra.qrcode.QrConfig;
 import com.github.pagehelper.Page;
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -54,11 +54,20 @@ public class StudentServiceImpl implements StudentService {
      * @param signDTO
      */
     @Transactional
-    public void sign(SignDTO signDTO,String imgPath) {
+    public void sign(SignDTO signDTO) {
+        Integer count = studentCertificateMapper.getClassCount(signDTO.getTrainClassId());
+        Integer amount = trainsClassMapper.getAmount(signDTO.getTrainClassId());
+        if (amount != null && count != null){
+            if (count >= amount){
+                throw new BaseException("该班级报名人数已满");
+            }
+        }
+
         //身份证号合法性
         if (signDTO.getIdCard() != null && !isNumber(signDTO.getIdCard(), "^(\\d{17})([0-9]|X|x)$")) {
             throw new BaseException("身份证号格式不正确");
         }
+
         Student s = studentMapper.getByIdCard(signDTO.getIdCard());
         if (s != null){
             //已有学员信息，修改信息
@@ -84,53 +93,25 @@ public class StudentServiceImpl implements StudentService {
             BeanUtils.copyProperties(signDTO,s);
             studentMapper.add(s);
         }
-        //生成证书编号
-        String ID = "GGJM791";
-        //通过培训期数次id获取年份、期号
-        String trainsName = trainSInfoMapper.getById(signDTO.getTrainsId()).getTrainsName();
-        // 通过班次id获取班次
-        TrainsClass classInfo = trainsClassMapper.getById(signDTO.getTrainClassId());
-        String trainsClassName = classInfo.getTrainsClassName();
-        //将获取的数据格式化
-        Pattern pattern = Pattern.compile("(\\d+)");
-        Matcher matcher = pattern.matcher(trainsName);    //2024年第6期
-        matcher.find();
-        String year = matcher.group();  //2024
-        matcher.find();
-        String qi = matcher.group();    //6
-        matcher = pattern.matcher(trainsClassName);     //第3班次
-        matcher.find();
-        String ban = matcher.group();   //3
-        year = addZeroForNum(year,4);
-        qi = addZeroForNum(qi,2);
-        ban = addZeroForNum(ban,2);
-        //获取序列号
-        int count = classInfo.getCount();
-        count += 1;
-        //修改数据库中count信息
-        trainsClassMapper.setCount(signDTO.getTrainClassId(),count);
-        ID = ID + year + qi + ban + addZeroForNum( count + "",4);
 
-        //获取期次的证书信息
+        //将报名信息自动更新到用户信息中
+        User user = User.builder().id(BaseContext.getCurrentId())
+                .image(signDTO.getImage()).idCard(signDTO.getIdCard())
+                .name(signDTO.getName()).build();
+        userMapper.update(user);
+
         Certificate certificate = certificateMapper.getCertificate(signDTO.getTrainsId());
-        //将证书编号转换为二维码保存
-        String fileName = ID + ".png";
+        StudentCertificate sCertificate = StudentCertificate.builder()
+                .studentId(s.getId()).trainsClassId(signDTO.getTrainClassId())
+                .isCertificate(false).certificateId(certificate.getId())
+                .pay(false).date(LocalDateTime.now()).build();
+
         /*
-        QrCodeUtil.generate("http://shiptrains.jvtc.jx.cn/#/pages/query?id=" + ID,
-                200,200, FileUtil.file(path+"/qrcode/" + fileName));
-         */
-        QrConfig qrConfig = new QrConfig(200,200);
-        // 设置边距，既二维码和背景之间的边距
-        qrConfig.setMargin(0);
-        QrCodeUtil.generate("http://shiptrains.jvtc.jx.cn/#/pages/query?id=" + ID,qrConfig,
-                FileUtil.file(path+"/qrcode/" + fileName));
-
-
-
         StudentCertificate sCertificate = StudentCertificate.builder()
                 .studentId(s.getId()).trainsClassId(signDTO.getTrainClassId())
                 .isCertificate(false).CertificateNo(ID).certificateId(certificate.getId())
                 .QRcode(imgPath+fileName).build();
+         */
         studentCertificateMapper.save(sCertificate);
 
     }
@@ -141,7 +122,12 @@ public class StudentServiceImpl implements StudentService {
      */
     @Override
     public void add(Student student) {
-        studentMapper.add(student);
+        Student s = studentMapper.getByIdCard(student.getIdCard());
+        if (s == null){
+            studentMapper.add(student);
+        }else{
+            throw new BaseException("该学员已存在(身份证号已存在)");
+        }
     }
 
     /**
@@ -170,7 +156,7 @@ public class StudentServiceImpl implements StudentService {
      */
     @Transactional
     public void delete(Long id) {
-        if (studentCertificateMapper.getCertificateCount(id) > 0){
+        if (studentCertificateMapper.getCertificateCount(id,true) > 0){
             throw new BaseException("该学员已有证书信息，不可删除");
         }
         Student student = studentMapper.getById(id);
@@ -203,7 +189,7 @@ public class StudentServiceImpl implements StudentService {
             List<Integer> classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
             Page<Student> page = studentCertificateMapper.getStudentBatch(classIds,pageQueryDTO.getName(),pageQueryDTO.getSex(),
-                    pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard());
+                    pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse());
             return new PageResult(page.getTotal(),page.getResult());
         }
 
@@ -219,14 +205,14 @@ public class StudentServiceImpl implements StudentService {
         if (pageQueryDTO.getTrainsId() == 0){
             //没用传递，在studentinfo中查询
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
-            Page<StudentInfoVo> page = studentMapper.getByBatch1(pageQueryDTO.getName(),pageQueryDTO.getState());
+            Page<StudentInfoVo> page = studentMapper.getByBatch1(pageQueryDTO.getName(),pageQueryDTO.getState(),pageQueryDTO.isReverse());
             return new PageResult(page.getTotal(),page.getResult());
         }else {
             //传递了，在studentcertificate中查询
             //先查询班次id
             List<Integer> classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
-            Page<StudentInfoVo> page = studentCertificateMapper.getStudentBatch1(classIds,pageQueryDTO.getName(),pageQueryDTO.getState());
+            Page<StudentInfoVo> page = studentCertificateMapper.getStudentBatch1(classIds,pageQueryDTO.getName(),pageQueryDTO.getState(),pageQueryDTO.isReverse());
             return new PageResult(page.getTotal(),page.getResult());
         }
     }
@@ -250,15 +236,20 @@ public class StudentServiceImpl implements StudentService {
             List<SignInfo> signInfos = new ArrayList<>();
             certificates.forEach(sc -> {
                 SignInfo signInfo = new SignInfo();
+                signInfo.setId(sc.getId());
                 signInfo.setCertificate(sc.isCertificate());
                 signInfo.setCertificateNo(sc.getCertificateNo());
+                signInfo.setDate(sc.getDate());
+                signInfo.setPay(sc.isPay());
                 TrainsClass trainsClass = trainsClassMapper.getById(sc.getTrainsClassId());
                 signInfo.setStartDate(trainsClass.getStartDate());
                 signInfo.setEndDate(trainsClass.getEndDate());
                 signInfo.setTrainsClassName(trainsClass.getTrainsClassName());
+                signInfo.setPosition(trainsClass.getPosition());
                 TrainsInfo trainsInfo = trainSInfoMapper.getById(trainsClass.getTrainsInfoId());
                 signInfo.setTrainsTitle(trainsInfo.getTrainsTitle());
                 signInfo.setTrainsName(trainsInfo.getTrainsName());
+                signInfo.setTrainsAddress(trainsInfo.getTrainsAddress());
                 signInfos.add(signInfo);
             });
             signVO.setSignInfos(signInfos);
@@ -269,19 +260,73 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
+     * 颁发证书
+     * @param studentIdsDTO1
+     */
+    @Transactional
+    public void issueCertificate(StudentIdsDTO1 studentIdsDTO1,String imgPath) {
+
+        if (studentIdsDTO1.getIds().size() > 0){
+            //生成证书编号
+            String ID = "GGJM791";
+            //通过培训期数次id获取年份、期号
+            String trainsName = trainSInfoMapper.getById(studentIdsDTO1.getTrainsId()).getTrainsName();
+            // 通过班次id获取班次
+            TrainsClass classInfo = trainsClassMapper.getById(studentIdsDTO1.getTrainsClassId());
+            String trainsClassName = classInfo.getTrainsClassName();
+            //将获取的数据格式化
+            Pattern pattern = Pattern.compile("(\\d+)");
+            Matcher matcher = pattern.matcher(trainsName);    //2024年第6期
+            matcher.find();
+            String year = matcher.group();  //2024
+            matcher.find();
+            String qi = matcher.group();    //6
+            matcher = pattern.matcher(trainsClassName);     //第3班次
+            matcher.find();
+            String ban = matcher.group();   //3
+            year = addZeroForNum(year,4);
+            qi = addZeroForNum(qi,2);
+            ban = addZeroForNum(ban,2);
+            //获取序列号
+            int count = classInfo.getCount();
+
+            List<Integer> ids = studentIdsDTO1.getIds();
+            List<StudentCertificate> list = new ArrayList<>();
+            for (Integer id : ids) {
+                count++;
+                String NO = ID + year + qi + ban + addZeroForNum( count + "",4);
+
+                //将证书编号转换为二维码保存
+                String fileName = NO + ".png";
+                QrConfig qrConfig = new QrConfig(200,200);
+                // 设置边距，既二维码和背景之间的边距
+                qrConfig.setMargin(0);
+                QrCodeUtil.generate("http://shiptrains.jvtc.jx.cn/#/pages/query?id=" + ID,qrConfig,
+                        FileUtil.file(path+"/qrcode/" + fileName));
+
+                list.add(StudentCertificate.builder().CertificateNo(NO).isCertificate(true).id(id)
+                        .QRcode(imgPath+fileName).build());
+            }
+            //修改证书信息
+            studentCertificateMapper.updateBatch(list);
+
+            //修改数据库中count信息
+            trainsClassMapper.setCount(studentIdsDTO1.getTrainsClassId(), count);
+        }
+    }
+
+    /**
      * 获取证书信息
      * @param studentIdsDTO
      * @return
      */
-    @Override
+    @Transactional
     public List<CertificateVO> getCertificate(StudentIdsDTO studentIdsDTO) {
         List<Integer> ids = studentIdsDTO.getIds();
         if (ids.size() > 0){
-            //将证书状态进行修改
-            studentCertificateMapper.updateCertificate(ids);
             //获取信息并进行封装
             //studentCertificate
-            List<StudentCertificate> sCertificate = studentCertificateMapper.getById(ids);
+            List<StudentCertificate> sCertificate = studentCertificateMapper.getByIds(ids);
             List<CertificateVO> list = new ArrayList<>();
             sCertificate.forEach(sc -> {
                 Student student = studentMapper.getById(sc.getStudentId());
@@ -290,7 +335,7 @@ public class StudentServiceImpl implements StudentService {
                 TrainsInfo trainsInfo = trainSInfoMapper.getById(certificate.getTrainsInfoId());
                 CertificateVO certificateVO = CertificateVO.builder()
                         .CertificateNo(sc.getCertificateNo()).title(certificate.getTitle())
-                        .startDate(certificate.getStartDate()).endDate(certificate.getEndDate())
+                        .startDate(certificate.getStartDate()).deadline(certificate.getDeadline())
                         .trainUnit(certificate.getTrainUnit()).name(student.getName())
                         .QRcode(sc.getQRcode()).image(student.getImage())
                         .trainStartDate(trainsClass.getStartDate()).trainEndDate(trainsClass.getEndDate())
@@ -301,6 +346,35 @@ public class StudentServiceImpl implements StudentService {
 
         }
         return null;
+    }
+
+    /**
+     * 取消报名
+     * @param id
+     */
+    @Override
+    public void cancelSign(int id) {
+        StudentCertificate studentCertificate = studentCertificateMapper.getById(id);
+        if (studentCertificate.isCertificate()){
+            throw new BaseException("该证书已颁发，无法取消报名");
+        }
+        studentCertificateMapper.deleteById(id);
+    }
+
+
+    @Override
+    public Integer getCount(Long id) {
+        return studentCertificateMapper.getCertificateCount(id,false);
+    }
+
+    /**
+     * 修改缴费状态
+     * @param id
+     * @param payStatue
+     */
+    @Override
+    public void updatePayStatus(int id, boolean payStatue) {
+        studentMapper.updatePayStatus(id,payStatue);
     }
 
     //判断字符串合法性判断

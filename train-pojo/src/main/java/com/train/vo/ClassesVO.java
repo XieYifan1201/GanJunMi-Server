@@ -27,6 +27,8 @@ public class ClassesVO {
     private int trainsCount;
     @ApiModelProperty("是否允许报名")
     private boolean isStart;
+    @ApiModelProperty("培训地址")
+    private String trainsAddress;
 
     @ApiModelProperty("班次id")
     private int trainsClassId;
@@ -38,6 +40,10 @@ public class ClassesVO {
     private LocalDate endDate;
     @ApiModelProperty("报名人数")
     private int count;
+    @ApiModelProperty("报名最多人数")
+    private int amount;
+    @ApiModelProperty("培训地点")
+    private String position;
 
 
 }
