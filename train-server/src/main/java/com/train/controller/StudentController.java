@@ -87,6 +87,13 @@ public class StudentController {
         return Result.success(studentService.getByBatch1(pageQueryDTO));
     }
 
+    @ApiOperation("分页查询学员信息(包含班次信息)")
+    @PostMapping("/getByBatch2")
+    public Result<PageResult> getByBatch2(@RequestBody StudentPageQueryDTO pageQueryDTO){
+        log.info("分页查询学员信息(包含班次信息)：{}",pageQueryDTO);
+        return Result.success(studentService.getByBatch2(pageQueryDTO));
+    }
+
 
     @ApiOperation("给学员颁发证书颁发证书")
     @PostMapping("/issueCertificate")
@@ -123,12 +130,11 @@ public class StudentController {
     }
 
     @ApiOperation("修改学员的缴费状态")
-    @GetMapping("/updatePayStatus")
-    public Result updatePayStatus(int id,boolean payStatue){
-        log.info("修改学员报名信息:{},{}",id,payStatue);
-        studentService.updatePayStatus(id,payStatue);
+    @PostMapping("/updatePayStatus")
+    public Result updatePayStatus(@RequestBody PayState state){
+        log.info("修改学员报名信息:{},{}",state);
+        studentService.updatePayStatus(state);
         return Result.success();
     }
-
 
 }

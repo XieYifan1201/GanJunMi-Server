@@ -25,7 +25,11 @@
     <update id="updatePayStatus">
         update studentcertificate set
         <if test="payStatue == true">pay = 1</if>
-        <if test="payStatue == false">pay = 0</if> where id = #{id}
+        <if test="payStatue == false">pay = 0</if> where id in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
     </update>
     <select id="getByBatch" resultType="com.train.entity.Student">
         select * from studentinfo
@@ -60,6 +64,30 @@
             </if>
             <if test="state == 2">
                 and s.invoiceId is null
+            </if>
+        </where>
+        <if test="reverse == true">
+            order by s.id desc
+        </if>
+    </select>
+    <select id="getByBatch2" resultType="com.train.vo.StudentC">
+        select s.*,tc.trainsClassId,tc.trainsClassName,ti.trainsId,ti.trainsTitle
+        from studentinfo s
+            left join studentcertificate c on c.studentId = s.id
+            left join trainsclass tc on tc.trainsClassId = c.trainsClassId
+            left join trainsinfo ti on ti.trainsId = tc.trainsInfoId
+        <where>
+            <if test="name != null and name != ''">
+                and s.name like concat('%',#{name},'%')
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and s.idCard  = #{idCard}
+            </if>
+            <if test="sex != null and sex != ''">
+                and s.sex = #{sex}
+            </if>
+            <if test="workUnit != null and workUnit != ''">
+                and s.workUnit like concat('%',#{workUnit},'%')
             </if>
         </where>
         <if test="reverse == true">

@@ -1,8 +1,10 @@
 package com.train.mapper;
 
 import com.github.pagehelper.Page;
+import com.train.dto.PayState;
 import com.train.dto.StudentPageQueryDTO;
 import com.train.entity.Student;
+import com.train.vo.StudentC;
 import com.train.vo.StudentInfoVo;
 import org.apache.ibatis.annotations.*;
 
@@ -68,8 +70,14 @@ public interface StudentMapper {
 
     /**
      * 修改学员的缴费状态
-     * @param id
-     * @param payStatue
+     * @param state
      */
-    void updatePayStatus(int id, boolean payStatue);
+    void updatePayStatus(PayState state);
+
+    /**
+     * 分页查询学员信息(包含班次信息)
+     * @param pageQueryDTO
+     * @return
+     */
+    Page<StudentC> getByBatch2(StudentPageQueryDTO pageQueryDTO);
 }

@@ -88,8 +88,13 @@ public interface StudentService {
 
     /**
      * 修改缴费状态
-     * @param id
-     * @param payStatue
      */
-    void updatePayStatus(int id, boolean payStatue);
+    void updatePayStatus(PayState state);
+
+    /**
+     * 分页查询学员信息(包含班次信息)
+     * @param pageQueryDTO
+     * @return
+     */
+    PageResult getByBatch2(StudentPageQueryDTO pageQueryDTO);
 }

@@ -12,10 +12,7 @@ import com.train.exception.BaseException;
 import com.train.mapper.*;
 import com.train.result.PageResult;
 import com.train.service.StudentService;
-import com.train.vo.CertificateVO;
-import com.train.vo.SignInfo;
-import com.train.vo.SignVO;
-import com.train.vo.StudentInfoVo;
+import com.train.vo.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -192,7 +189,6 @@ public class StudentServiceImpl implements StudentService {
                     pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse());
             return new PageResult(page.getTotal(),page.getResult());
         }
-
     }
 
     /**
@@ -218,6 +214,29 @@ public class StudentServiceImpl implements StudentService {
     }
 
     /**
+     * 分页查询学员信息(包含班次信息)
+     * @param pageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult getByBatch2(StudentPageQueryDTO pageQueryDTO) {
+        if (pageQueryDTO.getTrainsId() == 0){
+            //没用传递，在studentinfo中查询
+            PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
+            Page<StudentC> page = studentMapper.getByBatch2(pageQueryDTO);
+            return new PageResult(page.getTotal(),page.getResult());
+        }else {
+            //传递了，在studentcertificate中查询
+            //先查询班次id
+            List<Integer> classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
+            PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
+            Page<Student> page = studentCertificateMapper.getStudentBatch(classIds,pageQueryDTO.getName(),pageQueryDTO.getSex(),
+                    pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse());
+            return new PageResult(page.getTotal(),page.getResult());
+        }
+    }
+
+    /**
      * 获取学员报名信息
      * @return
      */
@@ -229,6 +248,9 @@ public class StudentServiceImpl implements StudentService {
             SignVO signVO = new SignVO();
             //获取报名学员信息
             Student student = studentMapper.getByIdCard(idCard);
+            if (student == null){
+                throw new BaseException("该学员未报名");
+            }
             BeanUtils.copyProperties(student,signVO);
             signVO.setStudentId(student.getId());
             //获取报名信息
@@ -369,12 +391,11 @@ public class StudentServiceImpl implements StudentService {
 
     /**
      * 修改缴费状态
-     * @param id
      * @param payStatue
      */
     @Override
-    public void updatePayStatus(int id, boolean payStatue) {
-        studentMapper.updatePayStatus(id,payStatue);
+    public void updatePayStatus(PayState payStatue) {
+        studentMapper.updatePayStatus(payStatue);
     }
 
     //判断字符串合法性判断
