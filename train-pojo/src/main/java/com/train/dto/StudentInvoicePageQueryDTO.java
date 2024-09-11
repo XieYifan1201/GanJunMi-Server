@@ -24,6 +24,9 @@ public class StudentInvoicePageQueryDTO {
     @ApiModelProperty("发票状态 0所有 1有发票 2没有发票")
     private int state;
 
+    @ApiModelProperty("缴费状态 0所有 1已缴费 2未缴费")
+    private int payState;
+
     @ApiModelProperty("是否为倒序")
     private boolean reverse;
 

@@ -97,4 +97,10 @@ public interface StudentService {
      * @return
      */
     PageResult getByBatch2(StudentPageQueryDTO pageQueryDTO);
+
+    /**
+     * 添加/修改学员报名信息
+     * @param signDTO1
+     */
+    void SAUpdateSign(SignDTO1 signDTO1);
 }

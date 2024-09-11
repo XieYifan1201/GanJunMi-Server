@@ -16,6 +16,7 @@ import com.train.result.PageResult;
 import com.train.service.UserService;
 import com.train.utils.HttpClientUtil;
 import com.train.vo.UserVO;
+import com.train.vo.UserVO1;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
             //当前数据库中是否有该openid ，没有保存
             user = userMapper.getByOpenid(openid);
             if (user == null){
-                user = User.builder().openid(openid).createTime(LocalDateTime.now()).roleId(3).build();
+                user = User.builder().openid(openid).createTime(LocalDateTime.now()).build();
                 userMapper.save(user);
             }
         }else {
@@ -135,7 +136,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.getById(BaseContext.getCurrentId());
         if (user.getRoleId() < 3){     //非管理员不能查询用户信息
             PageHelper.startPage(userPageQueryDTO.getPage(), userPageQueryDTO.getPageSize());
-            Page<UserVO> p = userMapper.pageQuery(userPageQueryDTO.getName());
+            Page<UserVO1> p = userMapper.pageQuery(userPageQueryDTO.getName());
             return new PageResult(p.getTotal(),p.getResult());
         }else {
             throw new BaseException("权限不足");
@@ -171,7 +172,7 @@ public class UserServiceImpl implements UserService {
             // TODO
             user.setImage("http://218.65.5.217:8103/files/user.png");
             //密码加密
-            user.setPassword(DigestUtils.md5DigestAsHex("trains@123456".getBytes()));
+            user.setPassword(DigestUtils.md5DigestAsHex("trains@888888".getBytes()));
             user.setCreateTime(LocalDateTime.now());
             userMapper.save(user);
         }else {
@@ -185,7 +186,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void resetPwd(Long id) {
-        String password = DigestUtils.md5DigestAsHex("trains@123456".getBytes());
+        String password = DigestUtils.md5DigestAsHex("trains@888888".getBytes());
         userMapper.editPwd(id,password);
     }
 

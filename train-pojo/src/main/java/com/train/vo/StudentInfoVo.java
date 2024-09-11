@@ -43,5 +43,18 @@ public class StudentInfoVo {
     private String unitPhone;
     @ApiModelProperty("是否为增值税发票")
     private boolean isSpecial;
+    @ApiModelProperty("是否缴费")
+    private boolean pay;
+    @ApiModelProperty("报名id")
+    private int studentCertificateId;
+
+    @ApiModelProperty("班次id")
+    private Integer trainsClassId;
+    @ApiModelProperty("班次名称")
+    private String trainsClassName;
+    @ApiModelProperty("期数id")
+    private Integer trainsId;
+    @ApiModelProperty("期数名称")
+    private String trainsTitle;
 
 }

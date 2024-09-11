@@ -34,10 +34,18 @@ public class StudentController {
         return Result.success();
     }
 
+    @ApiOperation("添加/修改学员报名信息")
+    @PostMapping("/SAUpdateSign")
+    public Result SAUpdateSign(@RequestBody SignDTO1 signDTO1){
+        log.info("添加/修改学员报名信息:{}",signDTO1);
+        studentService.SAUpdateSign(signDTO1);
+        return Result.success();
+    }
+
     @ApiOperation("添加学员信息")
     @PostMapping("/add")
     public Result add(@RequestBody Student student){
-        log.info("学员报名信息:{}",student);
+        log.info("添加学员信息:{}",student);
         studentService.add(student);
         return Result.success();
     }

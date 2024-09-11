@@ -20,7 +20,7 @@
         </set>
         where id = #{id}
     </update>
-    <select id="pageQuery" resultType="com.train.vo.UserVO">
+    <select id="pageQuery" resultType="com.train.vo.UserVO1">
         select * from users
         <where>
             password is not null

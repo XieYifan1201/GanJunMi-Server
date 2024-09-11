@@ -4,7 +4,7 @@ train:
     host: localhost
     port: 3306
 #    TODO 修改数据库
-    database: train1
+    database: train
     username: root
     password: 123456
   wechat:

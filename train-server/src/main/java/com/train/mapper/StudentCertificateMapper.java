@@ -103,7 +103,7 @@ public interface StudentCertificateMapper {
      * @param state
      * @return
      */
-    Page<StudentInfoVo> getStudentBatch1(List<Integer> classIds, String name, int state,boolean reverse);
+    Page<StudentInfoVo> getStudentBatch1(List<Integer> classIds, String name, int state,boolean reverse,int payState);
 
     /**
      * 更新报名信息

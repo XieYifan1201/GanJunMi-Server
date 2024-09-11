@@ -53,8 +53,12 @@
     </select>
 
     <select id="getByBatch1" resultType="com.train.vo.StudentInfoVo">
-        select s.*,v.bangNo,v.bankName,v.invoiceHead,v.invoiceNo,v.isSpecial,v.unitAddress,v.unitPhone
-        from studentinfo s left join invoiceinfo v on s.invoiceId = v.id
+        select s.*,v.bangNo,v.bankName,v.invoiceHead,v.invoiceNo,v.isSpecial,v.unitAddress,v.unitPhone,sc.id as studentCertificateId,sc.pay,ts.trainsClassId,ts.trainsClassName,ti.trainsId,ti.trainsTitle
+        from studentinfo s
+            left join invoiceinfo v on s.invoiceId = v.id
+            left join studentcertificate sc on sc.studentId = s.id
+            left join trainsclass ts on ts.trainsClassId = sc.trainsClassId
+            left join trainsinfo ti on ts.trainsInfoId = ti.trainsId
         <where>
             <if test="name != null">
                 s.name like concat('%',#{name},'%')

@@ -5,6 +5,7 @@ import com.train.dto.UserAddDTO;
 import com.train.dto.UserDTO;
 import com.train.entity.User;
 import com.train.vo.UserVO;
+import com.train.vo.UserVO1;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -48,7 +49,7 @@ public interface UserMapper {
      * 分页查询
      * @return
      */
-    Page<UserVO> pageQuery(String name);
+    Page<UserVO1> pageQuery(String name);
 
     /**
      * 通过用户名和密码进行查询

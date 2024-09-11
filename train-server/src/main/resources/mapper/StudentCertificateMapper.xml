@@ -48,16 +48,23 @@
         </if>
     </select>
     <select id="getStudentBatch1" resultType="com.train.vo.StudentInfoVo">
-        select s.*,i.* from studentcertificate c join studentinfo s on c.studentId = s.id
-        join invoiceinfo i on s.invoiceId = i.id
+        select s.*,i.*,c.pay,c.id as studentCertificateId,tc.trainsClassId,tc.trainsClassName,ti.trainsId,ti.trainsTitle from studentcertificate c
+            left join studentinfo s on c.studentId = s.id
+            left join invoiceinfo i on s.invoiceId = i.id
+            left join trainsclass tc on tc.trainsClassId = c.trainsClassId
+            left join trainsinfo ti on tc.trainsInfoId = ti.trainsId
         <where>
-            c.studentId in
-            <foreach collection="classIds" item="classId" separator="," open="(" close=")">
-                #{classId}
-            </foreach>
+            <if test="classIds != null">
+                c.trainsClassId in
+                <foreach collection="classIds" item="classId" separator="," open="(" close=")">
+                    #{classId}
+                </foreach>
+            </if>
             <if test="name != null and name != ''">and s.name like concat('%',#{name},'%')</if>
             <if test="state == 1">and s.invoiceId is not null</if>
             <if test="state == 2">and s.invoiceId is null</if>
+            <if test="payState == 1">and c.pay = 1</if>
+            <if test="payState == 2">and c.pay = 0</if>
         </where>
         <if test="reverse == true">
             order by c.id desc
@@ -74,7 +81,6 @@
             <if test="isCertificate != null">isCertificate = #{isCertificate},</if>
             <if test="CertificateNo != null">CertificateNo = #{CertificateNo},</if>
             <if test="QRcode != null">QRcode = #{QRcode},</if>
-            <if test="pay != null">pay = #{pay},</if>
         </set>
         where id = #{id}
     </update>

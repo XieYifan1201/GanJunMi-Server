@@ -118,9 +118,9 @@ public class UserController {
 
      */
 
-    @GetMapping("/page1")
+    @PostMapping("/page1")
     @ApiOperation("管理员分页查询")
-    public Result<PageResult> page1(UserPageQueryDTO userPageQueryDTO){
+    public Result<PageResult> page1(@RequestBody UserPageQueryDTO userPageQueryDTO){
         log.info("管理员分页查询:{},{}",userPageQueryDTO);
         PageResult pageResult = userService.page(userPageQueryDTO);
         return Result.success(pageResult);

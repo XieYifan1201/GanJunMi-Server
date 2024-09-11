@@ -1,6 +1,6 @@
 server:
 #  TODO 端口修改
-  port: 8081
+  port: 8080
 
 spring:
   profiles:
