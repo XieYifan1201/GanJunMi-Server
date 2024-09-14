@@ -93,4 +93,11 @@ public interface UserMapper {
      */
     @Update("update users set image = #{path} where id = #{id}")
     void addImage(String path,Long id);
+
+    /**
+     * 获取账户名用户
+     * @param openid
+     */
+    @Select("select * from users where openid = #{openid}")
+    User getOpenId(String openid);
 }

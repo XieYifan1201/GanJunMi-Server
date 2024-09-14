@@ -61,14 +61,15 @@ public class UserController {
     @PostMapping("/addAdmin")
     public Result addAdmin(@RequestBody UserAddDTO userAddDTO){
         log.info("新增管理员:{}",userAddDTO);
+        //判断当前账号是否存在
         userService.addAdmin(userAddDTO);
         return Result.success();
     }
 
-    @ApiOperation("重置管理员密码")
+    @ApiOperation("系统管理员重置管理员密码")
     @GetMapping("/resetPwd")
     public Result resetPwd(Long id){
-        log.info("重置管理员密码:{}",id);
+        log.info("系统管理员重置管理员密码:{}",id);
         userService.resetPwd(id);
         return Result.success();
     }
@@ -121,7 +122,7 @@ public class UserController {
     @PostMapping("/page1")
     @ApiOperation("管理员分页查询")
     public Result<PageResult> page1(@RequestBody UserPageQueryDTO userPageQueryDTO){
-        log.info("管理员分页查询:{},{}",userPageQueryDTO);
+        log.info("管理员分页查询:{}",userPageQueryDTO);
         PageResult pageResult = userService.page(userPageQueryDTO);
         return Result.success(pageResult);
     }

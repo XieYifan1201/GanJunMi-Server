@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PageResult page(UserPageQueryDTO userPageQueryDTO) {
         User user = userMapper.getById(BaseContext.getCurrentId());
-        if (user.getRoleId() < 3){     //非管理员不能查询用户信息
+        if (user.getRoleId() == null || user.getRoleId() < 3){     //非管理员不能查询用户信息
             PageHelper.startPage(userPageQueryDTO.getPage(), userPageQueryDTO.getPageSize());
             Page<UserVO1> p = userMapper.pageQuery(userPageQueryDTO.getName());
             return new PageResult(p.getTotal(),p.getResult());
@@ -164,8 +164,13 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void addAdmin(UserAddDTO userAddDTO) {
-        int roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
+        Integer roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
         if (roleId == 1){
+            User u = userMapper.getOpenId(userAddDTO.getOpenid());
+            if (u != null){
+                throw new BaseException("该账号已存在");
+            }
+
             //系统管理员才能添加管理员用户
             User user = new User();
             BeanUtils.copyProperties(userAddDTO,user);
@@ -181,13 +186,19 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * 管理员重置密码
+     * 系统管理员重置密码
      * @param id
      */
     @Override
     public void resetPwd(Long id) {
-        String password = DigestUtils.md5DigestAsHex("trains@888888".getBytes());
-        userMapper.editPwd(id,password);
+        Integer roleId = userMapper.getById(BaseContext.getCurrentId()).getRoleId();
+        if (roleId == 1){
+            //系统管理员才能重置密码
+            String password = DigestUtils.md5DigestAsHex("trains@888888".getBytes());
+            userMapper.editPwd(id,password);
+        }else {
+            throw new BaseException("权限不足");
+        }
     }
 
     /**
