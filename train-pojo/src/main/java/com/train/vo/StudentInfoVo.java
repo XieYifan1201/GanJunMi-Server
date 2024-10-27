@@ -24,6 +24,10 @@ public class StudentInfoVo {
     private String duties;
     @ApiModelProperty("工作单位")
     private String workUnit;
+    @ApiModelProperty("市")
+    private String city;
+    @ApiModelProperty("区")
+    private String district;
     private String address;
     @ApiModelProperty("学员开票信息id")
     private int invoiceId;
@@ -47,6 +51,8 @@ public class StudentInfoVo {
     private boolean pay;
     @ApiModelProperty("报名id")
     private int studentCertificateId;
+    @ApiModelProperty("回执")
+    private String receiptPath;
 
     @ApiModelProperty("班次id")
     private Integer trainsClassId;

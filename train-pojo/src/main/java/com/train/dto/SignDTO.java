@@ -24,10 +24,17 @@ public class SignDTO {
     private String duties;
     @ApiModelProperty("工作单位")
     private String workUnit;
+    @ApiModelProperty("市")
+    private String city;
+    @ApiModelProperty("区")
+    private String district;
+    @ApiModelProperty("详细地址")
     private String address;
     @ApiModelProperty("学员开票信息id")
     private Integer invoiceId;
     @ApiModelProperty("图片路径")
     private String image;
+    @ApiModelProperty("回执路径")
+    private String receiptPath;
 
 }

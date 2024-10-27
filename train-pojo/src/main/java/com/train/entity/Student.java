@@ -23,6 +23,11 @@ public class Student implements Serializable {
     private String duties;
     @ApiModelProperty("工作单位")
     private String workUnit;
+    @ApiModelProperty("市")
+    private String city;
+    @ApiModelProperty("区")
+    private String district;
+    @ApiModelProperty("详细地址")
     private String address;
     @ApiModelProperty("学员开票信息id")
     private Integer invoiceId;

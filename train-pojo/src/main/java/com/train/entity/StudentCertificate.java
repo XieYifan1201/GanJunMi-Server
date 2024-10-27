@@ -23,5 +23,9 @@ public class StudentCertificate {
     private String QRcode;
     private LocalDateTime date;
     private boolean pay;
+    private Long receipt;
+
+    private String special_content;
+    private String receiptPath;
 
 }

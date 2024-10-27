@@ -6,6 +6,7 @@ import com.train.entity.StudentCertificate;
 import com.train.result.PageResult;
 import com.train.result.Result;
 import com.train.service.StudentService;
+import com.train.vo.ApplyInfo;
 import com.train.vo.CertificateVO;
 import com.train.vo.SignVO;
 import io.swagger.annotations.Api;
@@ -144,5 +145,23 @@ public class StudentController {
         studentService.updatePayStatus(state);
         return Result.success();
     }
+
+    @ApiOperation("个别学员证书内容添加/修改")
+    @PostMapping("/addCertificateContent")
+    public Result addCertificateContent(@RequestBody SpecialCertificate certificate){
+        log.info("个别学员证书内容添加:{}",certificate);
+        studentService.addCertificateContent(certificate);
+        return Result.success();
+    }
+
+    @GetMapping("/getAllApplyInfo")
+    @ApiOperation("获取该账号的所有报名信息")
+    public Result<List<ApplyInfo>> getAllApplyInfo(){
+        log.info("获取该账号的所有报名信息");
+        return Result.success(studentService.getAllApplyInfo());
+    }
+
+
+
 
 }

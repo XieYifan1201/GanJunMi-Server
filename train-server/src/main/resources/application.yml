@@ -20,12 +20,12 @@ spring:
     database: ${train.redis.database}
   web:
     resources:
-      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path},file:${web.qrcode-path}
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path},file:${web.qrcode-path},file:${web.receipt-path}
 
   servlet:
     multipart:
       #单个文件上传限制
-      max-file-size: 10MB
+      max-file-size: 12MB
       #单个请求上传限制
       max-request-size: 100MB
 
@@ -33,9 +33,9 @@ mybatis:
   #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.train.entity
-  configuration:
+  #configuration:
     #开启驼峰命名自动映射
-    map-underscore-to-camel-case: true
+    #map-underscore-to-camel-case: true
 
 logging:
   level:
@@ -59,3 +59,4 @@ train:
 web:
   upload-path: D:/image/
   qrcode-path: D:/image/qrcode/
+  receipt-path: D:/image/receipt/

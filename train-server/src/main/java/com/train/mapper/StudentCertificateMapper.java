@@ -1,13 +1,17 @@
 package com.train.mapper;
 
 import com.github.pagehelper.Page;
+import com.train.dto.SpecialCertificate;
 import com.train.entity.Student;
 import com.train.entity.StudentCertificate;
+import com.train.vo.ApplyInfo;
+import com.train.vo.StudentC;
 import com.train.vo.StudentInfoVo;
 import com.train.vo.StudentVO;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -64,7 +68,21 @@ public interface StudentCertificateMapper {
      * @param idCard
      * @return
      */
-    Page<Student> getStudentBatch(List<Integer> classIds, String name, String sex, String workUnit, String idCard,boolean reverse);
+    Page<Student> getStudentBatch(List<Integer> classIds, String name, String sex, String workUnit, String idCard,boolean reverse,String city);
+
+
+    /**
+     * 获取班次信息及学员信息
+     * @param classIds
+     * @param name
+     * @param sex
+     * @param workUnit
+     * @param idCard
+     * @param reverse
+     * @param city
+     * @return
+     */
+    Page<StudentC> getStudentBatch2(List<Integer> classIds, String name, String sex, String workUnit, String idCard, boolean reverse, String city);
 
     /**
      * 获取报名班次的学员总数
@@ -120,4 +138,19 @@ public interface StudentCertificateMapper {
 
     @Select("select * from studentcertificate where id = #{id}")
     StudentCertificate getById(int id);
+
+    /**
+     * 学员添加/修改特殊证书信息
+     * @param certificate
+     */
+    @Update("update studentcertificate set special_content = #{content} where id = #{id}")
+    void addSpecial(SpecialCertificate certificate);
+
+    /**
+     * 获取该账号所有报名信息
+     * @param currentId
+     * @return
+     */
+    List<ApplyInfo> getAllApplyInfo(Long currentId);
+
 }

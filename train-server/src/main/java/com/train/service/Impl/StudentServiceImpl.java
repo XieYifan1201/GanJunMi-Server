@@ -101,7 +101,7 @@ public class StudentServiceImpl implements StudentService {
         StudentCertificate sCertificate = StudentCertificate.builder()
                 .studentId(s.getId()).trainsClassId(signDTO.getTrainClassId())
                 .isCertificate(false).certificateId(certificate.getId())
-                .pay(false).date(LocalDateTime.now()).build();
+                .pay(false).date(LocalDateTime.now()).receipt(BaseContext.getCurrentId()).receiptPath(signDTO.getReceiptPath()).build();
 
         /*
         StudentCertificate sCertificate = StudentCertificate.builder()
@@ -160,7 +160,7 @@ public class StudentServiceImpl implements StudentService {
         StudentCertificate sCertificate = StudentCertificate.builder()
                 .studentId(signDTO1.getStudentId()).trainsClassId(signDTO1.getTrainClassId())
                 .isCertificate(false).certificateId(certificate.getId())
-                .pay(payState).date(LocalDateTime.now()).build();
+                .pay(payState).date(LocalDateTime.now()).receiptPath(signDTO1.getReceiptPath()).build();
         studentCertificateMapper.save(sCertificate);
 
     }
@@ -238,7 +238,7 @@ public class StudentServiceImpl implements StudentService {
             List<Integer> classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
             Page<Student> page = studentCertificateMapper.getStudentBatch(classIds,pageQueryDTO.getName(),pageQueryDTO.getSex(),
-                    pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse());
+                    pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse(),pageQueryDTO.getCity());
             return new PageResult(page.getTotal(),page.getResult());
         }
     }
@@ -288,8 +288,8 @@ public class StudentServiceImpl implements StudentService {
             //先查询班次id
             List<Integer> classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
-            Page<Student> page = studentCertificateMapper.getStudentBatch(classIds,pageQueryDTO.getName(),pageQueryDTO.getSex(),
-                    pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse());
+            Page<StudentC> page = studentCertificateMapper.getStudentBatch2(classIds,pageQueryDTO.getName(),pageQueryDTO.getSex(),
+                    pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse(),pageQueryDTO.getCity());
             return new PageResult(page.getTotal(),page.getResult());
         }
     }
@@ -380,7 +380,7 @@ public class StudentServiceImpl implements StudentService {
                 QrConfig qrConfig = new QrConfig(200,200);
                 // 设置边距，既二维码和背景之间的边距
                 qrConfig.setMargin(0);
-                QrCodeUtil.generate("http://shiptrains.jvtc.jx.cn/#/pages/query?id=" + ID,qrConfig,
+                QrCodeUtil.generate("http://shiptrains.jvtc.jx.cn/#/pages/query?id=" + NO,qrConfig,
                         FileUtil.file(path+"/qrcode/" + fileName));
 
                 //修改证书信息
@@ -420,7 +420,8 @@ public class StudentServiceImpl implements StudentService {
                         .trainUnit(certificate.getTrainUnit()).name(student.getName())
                         .QRcode(sc.getQRcode()).image(student.getImage())
                         .trainStartDate(trainsClass.getStartDate()).trainEndDate(trainsClass.getEndDate())
-                        .trainsTitle(trainsInfo.getTrainsTitle()).trainsHour(trainsInfo.getTrainsHour()).build();
+                        .trainsTitle(trainsInfo.getTrainsTitle()).trainsHour(trainsInfo.getTrainsHour())
+                        .special_content(sc.getSpecial_content()).build();
                 list.add(certificateVO);
             });
             return list;
@@ -442,6 +443,22 @@ public class StudentServiceImpl implements StudentService {
         studentCertificateMapper.deleteById(id);
     }
 
+    /**
+     * 添加/修改特殊证书内容
+     * @param certificate
+     */
+    @Override
+    public void addCertificateContent(SpecialCertificate certificate) {
+        studentCertificateMapper.addSpecial(certificate);
+    }
+
+    /**
+     * 获取该账号所有报名信息
+     */
+    @Override
+    public List<ApplyInfo> getAllApplyInfo() {
+        return studentCertificateMapper.getAllApplyInfo(BaseContext.getCurrentId());
+    }
 
     @Override
     public Integer getCount(Long id) {

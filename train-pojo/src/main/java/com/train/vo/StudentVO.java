@@ -24,11 +24,17 @@ public class StudentVO {
     private String duties;
     @ApiModelProperty("工作单位")
     private String workUnit;
+    @ApiModelProperty("市")
+    private String city;
+    @ApiModelProperty("区")
+    private String district;
     private String address;
     @ApiModelProperty("图片路径")
     private String image;
     @ApiModelProperty("是否颁发证书")
     private boolean isCertificate;
+    @ApiModelProperty("特殊证书信息")
+    private String special_content;
 
     @ApiModelProperty("报名日期")
     private LocalDateTime date;

@@ -23,6 +23,11 @@ public class StudentC {
     private String duties;
     @ApiModelProperty("工作单位")
     private String workUnit;
+    @ApiModelProperty("市")
+    private String city;
+    @ApiModelProperty("区")
+    private String district;
+    @ApiModelProperty("详细地址")
     private String address;
     @ApiModelProperty("学员开票信息id")
     private Integer invoiceId;
@@ -33,6 +38,8 @@ public class StudentC {
     private String trainsClassName;
     private Integer trainsId;
     private String trainsTitle;
+    @ApiModelProperty("回执访问路径")
+    private String receiptPath;
 
 
 

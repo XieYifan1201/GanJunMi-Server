@@ -3,8 +3,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.train.mapper.StudentMapper">
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
-        insert into studentinfo (name, sex, idCard, phone, workUnit, address, image,duties,invoiceId)
-        values (#{name}, #{sex}, #{idCard}, #{phone}, #{workUnit}, #{address}, #{image},#{duties},#{invoiceId})
+        insert into studentinfo (name, sex, idCard, phone, workUnit,city,district, address, image,duties,invoiceId)
+        values (#{name}, #{sex}, #{idCard}, #{phone}, #{workUnit}, #{city},#{district},#{address}, #{image},#{duties},#{invoiceId})
     </insert>
 
     <update id="update">
@@ -15,6 +15,8 @@
             <if test="idCard != null and idCard != ''">idCard = #{idCard},</if>
             <if test="phone != null and phone != ''">phone = #{phone},</if>
             <if test="workUnit != null and workUnit != ''">workUnit = #{workUnit},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="district != null and district != ''">district = #{district},</if>
             <if test="address != null and address != ''">address = #{address},</if>
             <if test="image != null and image != ''">image = #{image},</if>
             <if test="duties != null and duties != ''">duties = #{duties},</if>
@@ -46,6 +48,9 @@
             <if test="workUnit != null and workUnit != ''">
                 and workUnit like concat('%',#{workUnit},'%')
             </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
         </where>
         <if test="reverse == true">
             order by id desc
@@ -53,7 +58,7 @@
     </select>
 
     <select id="getByBatch1" resultType="com.train.vo.StudentInfoVo">
-        select s.*,v.bangNo,v.bankName,v.invoiceHead,v.invoiceNo,v.isSpecial,v.unitAddress,v.unitPhone,sc.id as studentCertificateId,sc.pay,ts.trainsClassId,ts.trainsClassName,ti.trainsId,ti.trainsTitle
+        select s.*,v.bangNo,v.bankName,v.invoiceHead,v.invoiceNo,v.isSpecial,v.unitAddress,v.unitPhone,sc.id as studentCertificateId,sc.pay,sc.receiptPath,ts.trainsClassId,ts.trainsClassName,ti.trainsId,ti.trainsTitle
         from studentinfo s
             left join invoiceinfo v on s.invoiceId = v.id
             left join studentcertificate sc on sc.studentId = s.id
@@ -75,7 +80,7 @@
         </if>
     </select>
     <select id="getByBatch2" resultType="com.train.vo.StudentC">
-        select s.*,tc.trainsClassId,tc.trainsClassName,ti.trainsId,ti.trainsTitle
+        select s.*,c.receiptPath,tc.trainsClassId,tc.trainsClassName,ti.trainsId,ti.trainsTitle
         from studentinfo s
             left join studentcertificate c on c.studentId = s.id
             left join trainsclass tc on tc.trainsClassId = c.trainsClassId
@@ -92,6 +97,9 @@
             </if>
             <if test="workUnit != null and workUnit != ''">
                 and s.workUnit like concat('%',#{workUnit},'%')
+            </if>
+            <if test="city != null and city != ''">
+                and s.city = #{city}
             </if>
         </where>
         <if test="reverse == true">

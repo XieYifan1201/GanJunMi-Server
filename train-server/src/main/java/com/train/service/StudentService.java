@@ -3,6 +3,7 @@ package com.train.service;
 import com.train.dto.*;
 import com.train.entity.Student;
 import com.train.result.PageResult;
+import com.train.vo.ApplyInfo;
 import com.train.vo.CertificateVO;
 import com.train.vo.SignVO;
 
@@ -103,4 +104,16 @@ public interface StudentService {
      * @param signDTO1
      */
     void SAUpdateSign(SignDTO1 signDTO1);
+
+    /**
+     * 给学员添加特殊证书内容
+     * @param certificate
+     */
+    void addCertificateContent(SpecialCertificate certificate);
+
+    /**
+     * 获取该账号的所有报名信息
+     */
+    List<ApplyInfo> getAllApplyInfo();
+
 }

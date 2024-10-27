@@ -20,5 +20,7 @@ public class SignDTO1 {
     private Long studentId;
     @ApiModelProperty("学员报名id")
     private Integer studentCertificateId;
+    @ApiModelProperty("回执")
+    private String receiptPath;
 
 }

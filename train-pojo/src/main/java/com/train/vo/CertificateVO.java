@@ -40,4 +40,7 @@ public class CertificateVO {
     @ApiModelProperty("学时")
     private int trainsHour;
 
+    @ApiModelProperty("特殊证书内容")
+    private String special_content;
+
 }
