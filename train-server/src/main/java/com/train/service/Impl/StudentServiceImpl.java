@@ -264,7 +264,12 @@ public class StudentServiceImpl implements StudentService {
         }else {
             //传递了，在studentcertificate中查询
             //先查询班次id
-            List<Integer> classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
+            List<Integer> classIds = new ArrayList<>();
+            if (pageQueryDTO.getTrainsClassId() == 0){
+                classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
+            }else {
+                classIds.add(pageQueryDTO.getTrainsClassId());
+            }
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
             Page<StudentInfoVo> page = studentCertificateMapper.getStudentBatch1(classIds,pageQueryDTO.getName(),pageQueryDTO.getState(),pageQueryDTO.isReverse(),pageQueryDTO.getPayState());
             return new PageResult(page.getTotal(),page.getResult());
@@ -286,7 +291,12 @@ public class StudentServiceImpl implements StudentService {
         }else {
             //传递了，在studentcertificate中查询
             //先查询班次id
-            List<Integer> classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
+            List<Integer> classIds = new ArrayList<>();
+            if (pageQueryDTO.getTrainsClassId() == 0){
+                classIds = trainsClassMapper.getIdByTrainsId(pageQueryDTO.getTrainsId());
+            }else {
+                classIds.add(pageQueryDTO.getTrainsClassId());
+            }
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
             Page<StudentC> page = studentCertificateMapper.getStudentBatch2(classIds,pageQueryDTO.getName(),pageQueryDTO.getSex(),
                     pageQueryDTO.getWorkUnit(),pageQueryDTO.getIdCard(),pageQueryDTO.isReverse(),pageQueryDTO.getCity());

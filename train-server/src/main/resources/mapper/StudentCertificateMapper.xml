@@ -22,6 +22,8 @@
         <where>
             c.trainsClassId = #{trainsClassId}
             <if test="name != null">and i.name like concat('%',#{name},'%')</if>
+            <if test="state == 1">and c.isCertificate = 0</if>
+            <if test="state == 2">and c.isCertificate = 1</if>
         </where>
     </select>
     <select id="getByIds" resultType="com.train.entity.StudentCertificate">
@@ -90,7 +92,7 @@
             <if test="city != null and city != ''">and s.city = #{city}</if>
         </where>
         <if test="reverse == true">
-            order by c.id desc
+            order by sc.id desc
         </if>
     </select>
 

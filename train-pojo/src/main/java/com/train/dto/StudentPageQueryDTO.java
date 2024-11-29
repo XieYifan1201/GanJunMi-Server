@@ -13,6 +13,8 @@ public class StudentPageQueryDTO implements Serializable {
 
     @ApiModelProperty("期数id")
     private int trainsId;
+    @ApiModelProperty("班次id")
+    private int trainsClassId;
     private String name;
     private String idCard;
     private String sex;

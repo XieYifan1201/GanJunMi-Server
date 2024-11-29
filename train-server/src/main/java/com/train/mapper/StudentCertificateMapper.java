@@ -35,7 +35,7 @@ public interface StudentCertificateMapper {
      * 通过班次id查询所有报名信息
      * @param trainsClassId
      */
-    Page<StudentVO> getByTrainsClassId(int trainsClassId, String name);
+    Page<StudentVO> getByTrainsClassId(int trainsClassId, String name,int state);
 
     /**
      * 更改学员的颁发证书状态

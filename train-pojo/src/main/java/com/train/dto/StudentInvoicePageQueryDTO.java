@@ -20,6 +20,8 @@ public class StudentInvoicePageQueryDTO {
 
     @ApiModelProperty("期数id")
     private int trainsId;
+    @ApiModelProperty("班次id")
+    private int trainsClassId;
 
     @ApiModelProperty("发票状态 0所有 1有发票 2没有发票")
     private int state;

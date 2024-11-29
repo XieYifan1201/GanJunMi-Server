@@ -250,7 +250,7 @@ public class ClassesServiceImpl implements ClassesService {
     @Override
     public PageResult getStudentByTrainsClassId(StudentByClassDTO pageQueryDTO) {
         PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
-        Page<StudentVO> page = studentCertificateMapper.getByTrainsClassId(pageQueryDTO.getTrainsClassId(),pageQueryDTO.getName());
+        Page<StudentVO> page = studentCertificateMapper.getByTrainsClassId(pageQueryDTO.getTrainsClassId(),pageQueryDTO.getName(),pageQueryDTO.getState());
         return new PageResult(page.getTotal(),page.getResult());
     }
 

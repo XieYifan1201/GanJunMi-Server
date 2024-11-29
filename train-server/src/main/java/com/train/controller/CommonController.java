@@ -58,8 +58,8 @@ public class CommonController {
 
         // 文件大小检查
         long fileSize = image.getSize();
-        if (fileSize < 50 * 1024 || fileSize > 3 * 1024 * 1024) {
-            throw new BaseException("上传文件大小需为50KB-3MB");
+        if (fileSize < 50 * 1024 || fileSize > 5 * 1024 * 1024) {
+            throw new BaseException("上传文件大小需为50KB-5MB");
         }
 
         // 检查文件类型是否为图片
