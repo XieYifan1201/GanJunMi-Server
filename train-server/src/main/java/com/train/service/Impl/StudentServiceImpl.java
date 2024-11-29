@@ -254,7 +254,7 @@ public class StudentServiceImpl implements StudentService {
 
             //没用传递，在studentinfo中查询
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());
-            Page<StudentInfoVo> page = studentMapper.getByBatch1(pageQueryDTO.getName(),pageQueryDTO.getState(),pageQueryDTO.isReverse());
+            Page<StudentInfoVo> page = studentMapper.getByBatch1(pageQueryDTO.getName(),pageQueryDTO.getState(),pageQueryDTO.isReverse(),pageQueryDTO.getPayState());
             return new PageResult(page.getTotal(),page.getResult());
             /*
             PageHelper.startPage(pageQueryDTO.getPage(),pageQueryDTO.getPageSize());

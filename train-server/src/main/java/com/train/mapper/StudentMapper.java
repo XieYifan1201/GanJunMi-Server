@@ -50,7 +50,7 @@ public interface StudentMapper {
      * @param name
      * @return
      */
-    Page<StudentInfoVo> getByBatch1(String name,int state,boolean reverse);
+    Page<StudentInfoVo> getByBatch1(String name,int state,boolean reverse,int payState);
 
     /**
      * 根据身份证号获取学员信息

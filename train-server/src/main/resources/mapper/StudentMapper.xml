@@ -74,6 +74,8 @@
             <if test="state == 2">
                 and s.invoiceId is null
             </if>
+            <if test="payState == 1">and sc.pay = 1</if>
+            <if test="payState == 2">and sc.pay = 0</if>
         </where>
         <if test="reverse == true">
             order by s.id desc
