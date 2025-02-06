@@ -23,6 +23,9 @@ public class StudentPageQueryDTO implements Serializable {
     @ApiModelProperty("是否为倒序")
     private boolean reverse;
 
+    @ApiModelProperty("单位排序")
+    private boolean unitReverse;
+
     @ApiModelProperty("市")
     private String city;
 

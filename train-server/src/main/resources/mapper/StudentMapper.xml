@@ -104,8 +104,14 @@
                 and s.city = #{city}
             </if>
         </where>
-        <if test="reverse == true">
+        <if test="reverse == true and unitReverse == true">
+            order by s.id desc, s.workUnit
+        </if>
+        <if test="reverse == true and unitReverse != true">
             order by s.id desc
+        </if>
+        <if test="reverse != true and unitReverse == true">
+            order by s.workUnit
         </if>
     </select>
 </mapper>
