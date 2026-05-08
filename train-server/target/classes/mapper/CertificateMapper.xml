@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.train.mapper.CertificateMapper">
+    <insert id="save">
+        insert into certificate (title, startDate, deadline, trainUnit, trainsInfoId)
+        values (#{title}, #{startDate}, #{deadline}, #{trainUnit}, #{trainsInfoId})
+    </insert>
+    <update id="update">
+        update certificate
+        <set>
+            <if test="title != null and title != ''">
+                title = #{title},
+            </if>
+            <if test="startDate != null">
+                startDate = #{startDate},
+            </if>
+            <if test="deadline != null and deadline != ''">
+                deadline = #{deadline},
+            </if>
+            <if test="trainUnit != null and trainUnit != ''">
+                trainUnit = #{trainUnit},
+            </if>
+            <if test="trainsInfoId != null">
+                trainsInfoId = #{trainsInfoId},
+            </if>
+        </set>
+        where trainsInfoId = #{trainsInfoId}
+    </update>
+
+
+</mapper>

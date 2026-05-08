@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.train.mapper.StudentCertificateMapper">
+
+    <insert id="save">
+        insert into studentcertificate (studentId, trainsClassId, isCertificate, certificateId,date,pay,receipt,receiptPath)
+        values (#{studentId},#{trainsClassId},#{isCertificate},#{certificateId},#{date},#{pay},#{receipt},#{receiptPath})
+    </insert>
+    <update id="updateCertificate">
+        update studentcertificate set isCertificate = 1 where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+    <select id="getByStudentId" resultType="com.train.entity.StudentCertificate">
+        select * from studentcertificate where studentId = #{id}
+    </select>
+    <select id="getByTrainsClassId" resultType="com.train.vo.StudentVO">
+        select i.id as studentId,i.name,i.phone,i.sex,i.address,i.image,i.idCard,i.workUnit,i.city,i.district,c.id as studentCertificateId,c.isCertificate,c.special_content
+        from studentcertificate c right join studentinfo i on c.studentId = i.id
+        <where>
+            c.trainsClassId = #{trainsClassId}
+            <if test="name != null">and i.name like concat('%',#{name},'%')</if>
+            <if test="state == 1">and c.isCertificate = 0</if>
+            <if test="state == 2">and c.isCertificate = 1</if>
+        </where>
+    </select>
+    <select id="getByIds" resultType="com.train.entity.StudentCertificate">
+        select * from studentcertificate where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+    <select id="getStudentBatch" resultType="com.train.entity.Student">
+        select s.* from studentcertificate c join studentinfo s on c.studentId = s.id
+        <where>
+            c.trainsclassId in
+            <foreach collection="classIds" item="classId" separator="," open="(" close=")">
+                #{classId}
+            </foreach>
+            <if test="name != null and name != ''">and s.name like concat('%',#{name},'%')</if>
+            <if test="sex != null and sex != ''">and s.sex = #{sex}</if>
+            <if test="workUnit != null and workUnit != ''">and s.workUnit like concat('%',#{workUnit},'%')</if>
+            <if test="idCard != null and idCard != ''">and s.idCard = #{idCard}</if>
+            <if test="city != null and city != ''">and s.city = #{city}</if>
+        </where>
+        <if test="reverse == true">
+            order by c.id desc
+        </if>
+    </select>
+    <select id="getStudentBatch1" resultType="com.train.vo.StudentInfoVo">
+        select s.*,i.*,c.pay,c.id as studentCertificateId,c.receiptPath, tc.trainsClassId,tc.trainsClassName,ti.trainsId,ti.trainsTitle from studentcertificate c
+            left join studentinfo s on c.studentId = s.id
+            left join invoiceinfo i on s.invoiceId = i.id
+            left join trainsclass tc on tc.trainsClassId = c.trainsClassId
+            left join trainsinfo ti on tc.trainsInfoId = ti.trainsId
+        <where>
+            <if test="classIds != null">
+                c.trainsClassId in
+                <foreach collection="classIds" item="classId" separator="," open="(" close=")">
+                    #{classId}
+                </foreach>
+            </if>
+            <if test="name != null and name != ''">and s.name like concat('%',#{name},'%')</if>
+            <if test="state == 1">and s.invoiceId is not null</if>
+            <if test="state == 2">and s.invoiceId is null</if>
+            <if test="payState == 1">and c.pay = 1</if>
+            <if test="payState == 2">and c.pay = 0</if>
+        </where>
+        <if test="reverse == true">
+            order by c.id desc
+        </if>
+    </select>
+
+    <select id="getStudentBatch2" resultType="com.train.vo.StudentC">
+        select s.*,sc.receiptPath,sc.trainsClassId,tc.trainsClassName,t.trainsId,t.trainsTitle from studentcertificate sc
+        left join studentinfo s on sc.studentId = s.id
+        left join trainsclass tc on sc.trainsClassId = tc.trainsClassId
+        left join trainsinfo t on tc.trainsInfoId = t.trainsId
+        <where>
+            <if test="classIds != null">
+                sc.trainsClassId in
+                <foreach collection="classIds" item="classId" separator="," open="(" close=")">
+                    #{classId}
+                </foreach>
+            </if>
+            <if test="name != null and name != ''">and s.name like concat('%',#{name},'%')</if>
+            <if test="sex != null and sex != ''">and s.sex = #{sex}</if>
+            <if test="workUnit != null and workUnit != ''">and s.workUnit like concat('%',#{workUnit},'%')</if>
+            <if test="idCard != null and idCard != ''">and s.idCard = #{idCard}</if>
+            <if test="city != null and city != ''">and s.city = #{city}</if>
+        </where>
+        <if test="reverse == true">
+            order by sc.id desc
+        </if>
+    </select>
+
+    <select id="getCertificateCount" resultType="java.lang.Integer">
+        select count(*) from studentcertificate where studentId = #{id}
+        <if test="flag == true">and isCertificate = 1</if>
+    </select>
+    <select id="getAllApplyInfo" resultType="com.train.vo.ApplyInfo">
+        select sc.id,sc.isCertificate,sc.CertificateNo,sc.date,sc.studentId,sc.pay,s.name,s.sex,s.idCard,s.phone,t.trainsTitle,t.trainsName,t.trainsAddress,tc.trainsClassName,tc.startDate,tc.endDate,tc.position from studentcertificate sc
+            left join studentinfo s on sc.studentId = s.id
+            left join trainsclass tc on tc.trainsClassId = sc.trainsClassId
+            left join trainsinfo t on tc.trainsInfoId = t.trainsId
+        where sc.receipt = #{currentId} order by sc.id desc
+    </select>
+    <update id="update">
+        update studentcertificate
+        <set>
+            <if test="isCertificate != null">isCertificate = #{isCertificate},</if>
+            <if test="CertificateNo != null">CertificateNo = #{CertificateNo},</if>
+            <if test="QRcode != null">QRcode = #{QRcode},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateBatch">
+        <foreach collection="list" item="item" separator=";">
+            update studentcertificate set isCertificate = #{item.isCertificate},CertificateNo = #{item.CertificateNo},QRcode = #{item.QRcode} where id = #{item.id}
+        </foreach>
+    </update>
+
+
+</mapper>

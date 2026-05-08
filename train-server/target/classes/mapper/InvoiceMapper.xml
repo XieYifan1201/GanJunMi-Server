@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.train.mapper.InvoiceMapper">
+
+
+    <insert id="saveInvoice" useGeneratedKeys="true" keyProperty="id">
+        insert into invoiceinfo (invoiceHead, invoiceNo, bankName, bangNo, unitAddress, unitPhone, isSpecial)
+        values (#{invoiceHead}, #{invoiceNo}, #{bankName}, #{bangNo}, #{unitAddress}, #{unitPhone}, #{isSpecial})
+    </insert>
+    <update id="updateInvoice">
+        update invoiceinfo
+        <set>
+            <if test="invoiceHead != null">
+                invoiceHead = #{invoiceHead},
+            </if>
+            <if test="invoiceNo != null">
+                invoiceNo = #{invoiceNo},
+            </if>
+            <if test="bankName != null">
+                bankName = #{bankName},
+            </if>
+            <if test="bangNo != null">
+                bangNo = #{bangNo},
+            </if>
+            <if test="unitAddress != null">
+                unitAddress = #{unitAddress},
+            </if>
+            <if test="unitPhone != null">
+                unitPhone = #{unitPhone},
+            </if>
+            <if test="isSpecial != null">
+                isSpecial = #{isSpecial},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="getInvoiceByStudentId" resultType="com.train.entity.InvoiceInfo">
+        select * from invoiceinfo where id = (select invoiceId from studentinfo where studentinfo.id = #{studentId})
+    </select>
+</mapper>

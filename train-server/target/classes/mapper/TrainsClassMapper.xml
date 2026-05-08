@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.train.mapper.TrainsClassMapper">
+
+    <insert id="addBatch">
+        insert into trainsclass (trainsClassName, startDate, endDate, trainsInfoId,amount,position) values
+        <foreach collection="classInfo" item="c" separator=",">
+            (#{c.trainsClassName},#{c.startDate},#{c.endDate},#{c.trainsInfoId},#{c.amount},#{c.position})
+        </foreach>
+    </insert>
+    <insert id="add">
+        insert into trainsclass (trainsClassName, startDate, endDate, trainsInfoId,amount,position)
+        values (#{trainsClassName},#{startDate},#{endDate},#{trainsInfoId},#{amount},#{position})
+    </insert>
+    <update id="update">
+        update trainsclass
+        <set>
+            <if test="trainsClassName != null">
+                trainsClassName = #{trainsClassName},
+            </if>
+            <if test="startDate != null">
+                startDate = #{startDate},
+            </if>
+            <if test="endDate != null">
+                endDate = #{endDate},
+            </if>
+            <if test="amount != null and amount != 0 ">
+                amount = #{amount},
+            </if>
+            <if test="position != null and position != ''">
+                position = #{position},
+            </if>
+        </set>
+        where trainsClassId = #{trainsClassId}
+    </update>
+    <select id="getIds" resultType="java.lang.Integer">
+        select trainsClassId from trainsclass where trainsInfoId = (select trainsInfoId from trainsclass where trainsClassId = #{id})
+    </select>
+    <select id="getCertificateID" resultType="com.train.vo.CertificateIDInfo">
+        select c.trainsClassName,i.trainsName,c.count from trainsclass c left join trainsinfo i on c.trainsInfoId = i.trainsId where c.trainsInfoId = #{trainClassId}
+    </select>
+    <select id="getByTrainsId" resultType="com.train.vo.TrainsClassVO">
+        select trainsClassId, trainsClassName, startDate, endDate, trainsInfoId,amount,position, (select count(*) from studentcertificate where studentcertificate.trainsClassId = t.trainsClassId) count
+        from trainsclass t where trainsInfoId = #{id}
+    </select>
+    <select id="getClassInfo" resultType="com.train.vo.ClassesVO">
+        select i.*,c.trainsClassId,c.trainsClassName,c.startDate,c.endDate,c.amount,c.position, (select count(*) from studentcertificate where studentcertificate.trainsClassId = c.trainsClassId) as count
+        from trainsclass c join trainsinfo i on c.trainsInfoId = i.trainsId
+    </select>
+</mapper>

@@ -1,0 +1,47 @@
+{
+  "groups": [
+    {
+      "name": "train.jwt",
+      "type": "com.train.properties.JwtProperties",
+      "sourceType": "com.train.properties.JwtProperties"
+    },
+    {
+      "name": "train.wechat",
+      "type": "com.train.properties.WeChatProperties",
+      "sourceType": "com.train.properties.WeChatProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "train.jwt.secret-key",
+      "type": "java.lang.String",
+      "description": "JWT签名密钥",
+      "sourceType": "com.train.properties.JwtProperties"
+    },
+    {
+      "name": "train.jwt.token-name",
+      "type": "java.lang.String",
+      "description": "JWT令牌在请求头中的名称",
+      "sourceType": "com.train.properties.JwtProperties"
+    },
+    {
+      "name": "train.jwt.ttl",
+      "type": "java.lang.Long",
+      "description": "JWT令牌有效期（毫秒）",
+      "sourceType": "com.train.properties.JwtProperties"
+    },
+    {
+      "name": "train.wechat.appid",
+      "type": "java.lang.String",
+      "description": "微信公众号AppID",
+      "sourceType": "com.train.properties.WeChatProperties"
+    },
+    {
+      "name": "train.wechat.secret",
+      "type": "java.lang.String",
+      "description": "微信公众号AppSecret",
+      "sourceType": "com.train.properties.WeChatProperties"
+    }
+  ],
+  "hints": []
+}

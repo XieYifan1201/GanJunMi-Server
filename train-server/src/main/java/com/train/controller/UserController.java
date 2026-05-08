@@ -20,6 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 用户控制器
+ * 处理用户登录、信息管理、权限管理等相关请求
+ */
 @RestController
 @Api(tags = "用户相关接口")
 @Slf4j
@@ -28,16 +32,23 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
     @Autowired
     private JwtProperties jwtProperties;
 
+    /**
+     * 用户登录
+     * 支持微信小程序一键登录和管理员账号密码登录
+     * @param userLoginDTO 登录请求参数
+     * @return 登录结果，包含JWT令牌和用户信息
+     */
     @PostMapping("/login")
     @ApiOperation("用户登录")
     public Result<UserLoginVO> login(@RequestBody UserLoginDTO userLoginDTO){
         log.info("微信登录：{}",userLoginDTO);
-        //用户信息
+        // 获取用户信息
         User user = userService.wxLogin(userLoginDTO);
-        //生成jwt令牌
+        // 生成JWT令牌
         Map<String,Object> claims = new HashMap<>();
         claims.put(JwtConstant.USER_ID,user.getId());
         claims.put("openid",user.getOpenid());
@@ -49,6 +60,11 @@ public class UserController {
                         .idCard(user.getIdCard()).phone(user.getPhone()).build());
     }
 
+    /**
+     * 用户证件照上传
+     * @param path 证件照路径
+     * @return 操作结果
+     */
     @ApiOperation("用户证件照上传")
     @GetMapping("/addImage")
     public Result addImage(String path){
@@ -57,15 +73,25 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 新增管理员账号
+     * 仅系统管理员可操作
+     * @param userAddDTO 管理员信息
+     * @return 操作结果
+     */
     @ApiOperation("新增管理员")
     @PostMapping("/addAdmin")
     public Result addAdmin(@RequestBody UserAddDTO userAddDTO){
         log.info("新增管理员:{}",userAddDTO);
-        //判断当前账号是否存在
         userService.addAdmin(userAddDTO);
         return Result.success();
     }
 
+    /**
+     * 系统管理员重置管理员密码
+     * @param id 管理员ID
+     * @return 操作结果
+     */
     @ApiOperation("系统管理员重置管理员密码")
     @GetMapping("/resetPwd")
     public Result resetPwd(Long id){
@@ -74,6 +100,11 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 管理员修改自己的密码
+     * @param password 新密码
+     * @return 操作结果
+     */
     @ApiOperation("修改自己密码（管理员）")
     @GetMapping("/editPwd")
     public Result editPwd(String password){
@@ -82,6 +113,12 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 删除管理员账号
+     * 仅系统管理员可操作
+     * @param id 管理员ID
+     * @return 操作结果
+     */
     @ApiOperation("删除管理员")
     @GetMapping("/delete")
     public Result delete(Long id){
@@ -90,8 +127,11 @@ public class UserController {
         return Result.success();
     }
 
-
-
+    /**
+     * 修改用户信息
+     * @param userDTO 用户信息
+     * @return 操作结果
+     */
     @PutMapping("/update")
     @ApiOperation("修改用户信息")
     public Result update(@RequestBody UserDTO userDTO){
@@ -100,6 +140,10 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 获取当前用户信息
+     * @return 用户信息
+     */
     @GetMapping("/getById")
     @ApiOperation("获取用户信息")
     public Result<UserVO> getById(){
@@ -108,17 +152,11 @@ public class UserController {
         return Result.success(userDTO);
     }
 
-    /*
-    @GetMapping("/page2")
-    @ApiOperation("学员分页查询")
-    public Result<PageResult> page2(UserPageQueryDTO userPageQueryDTO){
-        log.info("学员分页查询:{}",userPageQueryDTO);
-        PageResult pageResult = userService.page(userPageQueryDTO, 3);
-        return Result.success(pageResult);
-    }
-
+    /**
+     * 管理员分页查询用户列表
+     * @param userPageQueryDTO 分页查询参数
+     * @return 分页结果
      */
-
     @PostMapping("/page1")
     @ApiOperation("管理员分页查询")
     public Result<PageResult> page1(@RequestBody UserPageQueryDTO userPageQueryDTO){
@@ -127,6 +165,11 @@ public class UserController {
         return Result.success(pageResult);
     }
 
+    /**
+     * 系统管理员修改用户权限
+     * @param userAuthorizeDTO 权限修改参数
+     * @return 操作结果
+     */
     @ApiOperation("系统管理员修改权限")
     @PutMapping("/editAuthority")
     public Result editAuthority(@RequestBody UserAuthorizeDTO userAuthorizeDTO){

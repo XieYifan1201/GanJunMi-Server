@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.train.mapper.StudentMapper">
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        insert into studentinfo (name, sex, idCard, phone, workUnit,city,district, address, image,duties,invoiceId)
+        values (#{name}, #{sex}, #{idCard}, #{phone}, #{workUnit}, #{city},#{district},#{address}, #{image},#{duties},#{invoiceId})
+    </insert>
+
+    <update id="update">
+        update studentinfo
+        <set>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="sex != null and sex != ''">sex = #{sex},</if>
+            <if test="idCard != null and idCard != ''">idCard = #{idCard},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="workUnit != null and workUnit != ''">workUnit = #{workUnit},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="district != null and district != ''">district = #{district},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="image != null and image != ''">image = #{image},</if>
+            <if test="duties != null and duties != ''">duties = #{duties},</if>
+            <if test="invoiceId != null || invoiceId != 0">invoiceId = #{invoiceId},</if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updatePayStatus">
+        update studentcertificate set
+        <if test="payStatue == true">pay = 1</if>
+        <if test="payStatue == false">pay = 0</if> where id in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </update>
+    <select id="getByBatch" resultType="com.train.entity.Student">
+        select * from studentinfo
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and idCard  = #{idCard}
+            </if>
+            <if test="sex != null and sex != ''">
+                and sex = #{sex}
+            </if>
+            <if test="workUnit != null and workUnit != ''">
+                and workUnit like concat('%',#{workUnit},'%')
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+        </where>
+        <if test="reverse == true">
+            order by id desc
+        </if>
+    </select>
+
+    <select id="getByBatch1" resultType="com.train.vo.StudentInfoVo">
+        select s.*,v.bangNo,v.bankName,v.invoiceHead,v.invoiceNo,v.isSpecial,v.unitAddress,v.unitPhone,sc.id as studentCertificateId,sc.pay,sc.receiptPath,ts.trainsClassId,ts.trainsClassName,ti.trainsId,ti.trainsTitle
+        from studentinfo s
+            left join invoiceinfo v on s.invoiceId = v.id
+            left join studentcertificate sc on sc.studentId = s.id
+            left join trainsclass ts on ts.trainsClassId = sc.trainsClassId
+            left join trainsinfo ti on ts.trainsInfoId = ti.trainsId
+        <where>
+            <if test="name != null">
+                s.name like concat('%',#{name},'%')
+            </if>
+            <if test="state == 1">
+                and s.invoiceId is not null
+            </if>
+            <if test="state == 2">
+                and s.invoiceId is null
+            </if>
+            <if test="payState == 1">and sc.pay = 1</if>
+            <if test="payState == 2">and sc.pay = 0</if>
+        </where>
+        <if test="reverse == true">
+            order by s.id desc
+        </if>
+    </select>
+    <select id="getByBatch2" resultType="com.train.vo.StudentC">
+        select s.*,c.receiptPath,tc.trainsClassId,tc.trainsClassName,ti.trainsId,ti.trainsTitle
+        from studentinfo s
+            left join studentcertificate c on c.studentId = s.id
+            left join trainsclass tc on tc.trainsClassId = c.trainsClassId
+            left join trainsinfo ti on ti.trainsId = tc.trainsInfoId
+        <where>
+            <if test="name != null and name != ''">
+                and s.name like concat('%',#{name},'%')
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and s.idCard  = #{idCard}
+            </if>
+            <if test="sex != null and sex != ''">
+                and s.sex = #{sex}
+            </if>
+            <if test="workUnit != null and workUnit != ''">
+                and s.workUnit like concat('%',#{workUnit},'%')
+            </if>
+            <if test="city != null and city != ''">
+                and s.city = #{city}
+            </if>
+        </where>
+        <if test="reverse == true and unitReverse == true">
+            order by s.id desc, s.workUnit
+        </if>
+        <if test="reverse == true and unitReverse != true">
+            order by s.id desc
+        </if>
+        <if test="reverse != true and unitReverse == true">
+            order by s.workUnit
+        </if>
+    </select>
+</mapper>

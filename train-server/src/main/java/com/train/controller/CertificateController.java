@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+/**
+ * 证书控制器
+ * 处理证书查询、验证等相关业务
+ */
 @RestController
 @Api(tags = "证书相关接口")
 @Slf4j
@@ -25,49 +28,18 @@ public class CertificateController {
     @Autowired
     private CertificateService certificateService;
 
+    /**
+     * 通过证书编号查询证书信息
+     * @param number 证书编号
+     * @return 证书详细信息
+     */
     @ApiOperation("通过证书编号获取证书信息")
     @GetMapping("/getByNumber")
     public Result<CertificateVO> getByNumber(String number){
         log.info("证书编号：{}",number);
         CertificateVO certificateVO = certificateService.getByNumber(number);
-
         return Result.success(certificateVO);
     }
-
-
-    /*
-    @PostMapping("/save")
-    @ApiOperation("添加证书")
-    public Result save(@RequestBody CertificateDTO certificateDTO){
-        log.info("添加证书:{}",certificateDTO);
-        certificateService.save(certificateDTO);
-        return Result.success();
-    }
-
-    @GetMapping("/pageQuery")
-    @ApiOperation("证书分页查询")
-    public Result<PageResult> pageQuery(UserPageQueryDTO pageQueryDTO){
-        log.info("证书分页查询:{}",pageQueryDTO);
-        PageResult pageResult = certificateService.pageQuery(pageQueryDTO);
-        return Result.success(pageResult);
-    }
-
-    @PutMapping("/update")
-    @ApiOperation("修改证书")
-    public Result update(@RequestBody CertificateDTO certificateDTO){
-        log.info("修改证书:{}",certificateDTO);
-        certificateService.update(certificateDTO);
-        return Result.success();
-    }
-
-    @ApiOperation("删除证书")
-    @GetMapping("/delete")
-    public Result delete(Long id){
-        log.info("删除证书：{}",id);
-        certificateService.delete(id);
-        return Result.success();
-    }
-     */
 
 }
 
